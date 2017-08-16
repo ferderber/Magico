@@ -1,0 +1,35 @@
+package net.cobaltium.magico.spells;
+
+import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.living.player.Player;
+import net.cobaltium.magico.data.MagicoProjectileData;
+import com.flowpowered.math.imaginary.Quaterniond;
+import com.flowpowered.math.vector.Vector3d;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.event.cause.entity.spawn.SpawnCause;
+import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
+import org.spongepowered.api.world.World;
+
+public class ProjectileSpell implements Spell {
+    private EntityType entityType;
+    public ProjectileSpell(EntityType type) {
+        this.entityType = type;
+    }
+
+    public void handle(Player player) {
+        World world = player.getWorld();
+        Vector3d rotation = player.getHeadRotation();
+        final Vector3d direction = Quaterniond.fromAxesAnglesDeg(rotation.getX(), -rotation.getY(), rotation.getZ()).getDirection();
+        Vector3d launchSpot = player.getLocation().getPosition().add(0, 1, 0).add(direction.mul(1.5));
+        Entity entity = world.createEntity(entityType, launchSpot);
+        MagicoProjectileData data = entity.getOrCreate(MagicoProjectileData.class).get();
+        data.setBlockDamage(false);
+        entity.offer(data);
+        entity.setVelocity(direction.mul(2));
+        SpawnCause spawnCause = SpawnCause.builder().type(SpawnTypes.PLUGIN).build();
+        NamedCause cause = NamedCause.of(NamedCause.OWNER, player);
+        world.spawnEntity(entity, Cause.source(spawnCause).named(cause).build());
+    }
+}
