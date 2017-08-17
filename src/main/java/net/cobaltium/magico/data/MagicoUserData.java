@@ -1,7 +1,7 @@
 package net.cobaltium.magico.data;
 
 import net.cobaltium.magico.MagicoKeys;
-import net.cobaltium.magico.spells.Fireball;
+import net.cobaltium.magico.spells.IceWall;
 import net.cobaltium.magico.spells.Spell;
 import net.cobaltium.magico.spells.SpellFactory;
 import org.spongepowered.api.Sponge;
@@ -19,7 +19,7 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
     private String currentSpellName;
     protected MagicoUserData() {
         this.mana = 100;
-        this.currentSpellName = Fireball.class.getName();
+        this.currentSpellName = IceWall.class.getName();
         registerGettersAndSetters();
     }
     protected MagicoUserData(int mana, String spellName) {
@@ -29,11 +29,6 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
     }
     @Override
     protected void registerGettersAndSetters() {
-//        registerFieldGetter(MagicoKeys.CURRENT_SPELL, this::getCurrentSpell);
-//        registerFieldGetter(MagicoKeys.PLAYER_MANA, this::getMana);
-//        registerFieldSetter(MagicoKeys.PLAYER_MANA, this::setMana);
-//        registerFieldSetter(MagicoKeys.CURRENT_SPELL, this::setCurrentSpell);
-
         registerFieldGetter(MagicoKeys.PLAYER_MANA, () -> this.mana);
         registerFieldGetter(MagicoKeys.CURRENT_SPELL, () -> this.currentSpellName);
         registerFieldSetter(MagicoKeys.PLAYER_MANA, mana -> this.mana = mana);

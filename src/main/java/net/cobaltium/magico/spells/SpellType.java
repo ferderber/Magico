@@ -16,4 +16,12 @@ public class SpellType {
     public SpellListener getListener() {
         return spellListener;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getKey() {
+        return key;
+    }
 }

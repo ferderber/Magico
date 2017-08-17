@@ -6,7 +6,6 @@ import net.cobaltium.magico.spells.SpellFactory;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.manipulator.immutable.common.AbstractImmutableData;
 import org.spongepowered.api.data.value.immutable.ImmutableValue;
-import org.spongepowered.api.data.value.mutable.Value;
 
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
     protected void registerGetters() {
         registerFieldGetter(MagicoKeys.PLAYER_MANA, () -> this.mana);
         registerFieldGetter(MagicoKeys.CURRENT_SPELL, () -> this.currentSpellName);
-//        registerFieldGetter(MagicoKeys.CURRENT_SPELL, this::getCurrentSpell);
         registerKeyValue(MagicoKeys.CURRENT_SPELL, this::currentSpell);
         registerKeyValue(MagicoKeys.PLAYER_MANA, this::mana);
 }

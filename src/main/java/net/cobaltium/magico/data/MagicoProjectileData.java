@@ -5,10 +5,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.DataView;
-import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.manipulator.mutable.common.AbstractData;
 import org.spongepowered.api.data.merge.MergeFunction;
-import org.spongepowered.api.data.value.BaseValue;
 import org.spongepowered.api.data.value.mutable.Value;
 
 import java.util.Optional;
@@ -27,9 +25,6 @@ public class MagicoProjectileData extends AbstractData<MagicoProjectileData, Imm
 
     @Override
     protected void registerGettersAndSetters() {
-//        registerFieldGetter(MagicoKeys.DOES_BLOCK_DAMAGE, this::doesBlockDamage);
-//        registerFieldSetter(MagicoKeys.DOES_BLOCK_DAMAGE, this::setBlockDamage);
-
         registerFieldGetter(MagicoKeys.DOES_BLOCK_DAMAGE, () -> this.blockDamage);
         registerFieldSetter(MagicoKeys.DOES_BLOCK_DAMAGE, blockDamage -> this.blockDamage = blockDamage);
         registerKeyValue(MagicoKeys.DOES_BLOCK_DAMAGE, this::blockDamage);

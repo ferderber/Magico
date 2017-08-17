@@ -7,6 +7,8 @@ package net.cobaltium.magico;
 import net.cobaltium.magico.data.*;
 import net.cobaltium.magico.listeners.MagicoListener;
 import net.cobaltium.magico.spells.SpellList;
+import net.cobaltium.magico.spells.SpellType;
+import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.event.Listener;
@@ -14,7 +16,6 @@ import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
-import org.slf4j.Logger;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 
@@ -27,14 +28,16 @@ public class Magico {
     private Logger logger;
 
     @Inject
-    Game game;
+    private Game game;
 
     @Inject
     private PluginManager pluginManager;
 
+    @Inject
+    private PluginContainer plugin;
+
     @Listener
     public void preInit(GamePreInitializationEvent e) {
-        PluginContainer plugin = pluginManager.getPlugin("magico").get();
         DataRegistration.builder().dataClass(MagicoProjectileData.class)
                 .immutableClass(ImmutableMagicoProjectileData.class)
                 .builder(new MagicoProjectileBuilder())
@@ -49,8 +52,11 @@ public class Magico {
                 .buildAndRegister(plugin);
 
         //Listeners
-        this.game.getEventManager().registerListeners(this, new MagicoListener());
-        SpellList.ALL.forEach((spellType) -> this.game.getEventManager().registerListeners(this, spellType.getListener()));
+        this.game.getEventManager().registerListeners(this, new MagicoListener(this.plugin));
+        SpellType[] spellTypes = SpellList.ALL;
+        for (int i = 0; i < spellTypes.length; i++) {
+            this.game.getEventManager().registerListeners(this, spellTypes[i].getListener());
+        }
     }
 
     @Listener
