@@ -1,6 +1,5 @@
 package net.cobaltium.magico.listeners;
 
-import net.cobaltium.magico.MagicoKeys;
 import net.cobaltium.magico.data.MagicoUserData;
 import net.cobaltium.magico.spells.*;
 import org.spongepowered.api.data.key.Keys;
@@ -33,7 +32,7 @@ public class MagicoListener {
 
             if (player.get(Keys.IS_SNEAKING).isPresent() && player.get(Keys.IS_SNEAKING).get().booleanValue()) {
                 SpellType spellType = getNextSpellName(user.getCurrentSpellName());
-                user.set(MagicoKeys.CURRENT_SPELL, spellType.getKey());
+                user.setCurrentSpell(spellType.getKey());
                 player.offer(user);
                 player.sendMessage(Text.builder().append(Text.of("Current spell changed to ")).append(Text.of(spellType.getName())).color(TextColors.AQUA).build());
             } else {
@@ -45,7 +44,13 @@ public class MagicoListener {
                 } else {
                     spell = new Fireball();
                 }
-                spell.handle(plugin, player);
+                if (user.getMana() >= spell.getManaCost()) {
+                    spell.handle(plugin, player);
+                    user.reduceMana(spell.getManaCost());
+                    player.offer(user);
+                } else {
+                    player.sendMessage(Text.of("Not enough mana"));
+                }
             }
         }
     }

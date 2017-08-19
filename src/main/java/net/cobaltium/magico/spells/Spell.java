@@ -5,4 +5,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 
 public interface Spell {
     void handle(PluginContainer plugin, Player player);
+
+    int getManaCost();
 }

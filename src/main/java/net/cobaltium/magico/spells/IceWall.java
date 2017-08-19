@@ -24,6 +24,8 @@ public class IceWall implements Spell {
 
     private int wallSize;
 
+    private final int MANA_COST = 10;
+
     public IceWall() {
         wallSize = 3;
     }
@@ -54,6 +56,10 @@ public class IceWall implements Spell {
                 }
             }).submit(plugin);
         }
+    }
+
+    public int getManaCost() {
+        return MANA_COST;
     }
 
     public Location<World>[][] getWall(Location<World> center, Vector3i vec) {

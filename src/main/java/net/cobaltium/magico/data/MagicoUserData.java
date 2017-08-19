@@ -47,7 +47,7 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
     }
 
     public int getMana() {
-        return get(MagicoKeys.PLAYER_MANA).get();
+        return mana;
     }
 
     public Optional<Spell> getCurrentSpell() {
@@ -57,14 +57,22 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
     }
 
     public void setMana(int i) {
+        mana = i;
         set(MagicoKeys.PLAYER_MANA, i);
     }
 
     public void setCurrentSpell(String spell) {
         set(MagicoKeys.CURRENT_SPELL, spell);
     }
+
     public String getCurrentSpellName() {
         return get(MagicoKeys.CURRENT_SPELL).get();
+    }
+
+    public int reduceMana(int amount) {
+        mana = mana - amount;
+        set(MagicoKeys.PLAYER_MANA, mana);
+        return mana;
     }
 
     @Override
