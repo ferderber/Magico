@@ -30,7 +30,7 @@ public abstract class SqlTable {
         String str = "CREATE TABLE IF NOT EXISTS " + this.getClass().getSimpleName() + "(";
         while (!columns.isEmpty()) {
             Field field = columns.remove();
-            DataColumn dc = (DataColumn) field.getDeclaredAnnotation(DataColumn.class);
+            DataColumn dc = field.getDeclaredAnnotation(DataColumn.class);
             str += " ";
             str += field.getName() + " " + field.getGenericType().getTypeName();
             if (dc.primaryKey()) {
