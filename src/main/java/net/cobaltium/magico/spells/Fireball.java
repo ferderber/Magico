@@ -7,7 +7,7 @@ public class Fireball extends ProjectileSpell {
     private final int MANA_COST = 10;
 
     public Fireball() {
-       super(EntityTypes.FIREBALL);
+        super(EntityTypes.FIREBALL);
     }
 
     @Override

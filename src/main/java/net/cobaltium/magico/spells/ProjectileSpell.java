@@ -15,6 +15,7 @@ import org.spongepowered.api.world.World;
 
 public abstract class ProjectileSpell implements Spell {
     private EntityType entityType;
+
     public ProjectileSpell(EntityType type) {
         this.entityType = type;
     }

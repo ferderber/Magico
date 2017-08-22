@@ -44,14 +44,14 @@ public class IceWall implements Spell {
             Queue<BlockSnapshot> wallSnapshot = getWallSnapshot(wall);
             for (int i = 0; i < wall.length; i++) {
                 for (int j = 0; j < wall[i].length; j++) {
-                    if(wall[i][j] != null) {
+                    if (wall[i][j] != null) {
                         wall[i][j].setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlag.NONE, Cause.source(plugin).build());
                     }
                 }
             }
 
             Task.builder().delay(2, TimeUnit.SECONDS).execute(() -> {
-                while(!wallSnapshot.isEmpty()) {
+                while (!wallSnapshot.isEmpty()) {
                     wallSnapshot.remove().restore(true, BlockChangeFlag.NONE);
                 }
             }).submit(plugin);
@@ -65,10 +65,10 @@ public class IceWall implements Spell {
     public Location<World>[][] getWall(Location<World> center, Vector3i vec) {
         Location<World>[][] wall = new Location[wallSize][wallSize];
         int middle = wallSize / 2;
-        if(wallSize % 2 == 0) {
+        if (wallSize % 2 == 0) {
             //two middles hopefully we don't use this
         } else {
-            if(vec.getX() == 0 && vec.getY() == 1 && vec.getZ() == 0) {
+            if (vec.getX() == 0 && vec.getY() == 1 && vec.getZ() == 0) {
                 vec = vec.add(1, 0, 1);
                 wall[0][0] = center.add(vec.mul(-middle, middle, -middle)); //set first position by offset from center
                 for (int i = 0; i < wall.length; i++) {
@@ -79,8 +79,7 @@ public class IceWall implements Spell {
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 vec = vec.add(0, 1, 0);
                 wall[0][0] = center.add(vec.mul(-middle, middle, -middle)); //set first position by offset from center
                 for (int i = 0; i < wall.length; i++) {
@@ -100,8 +99,8 @@ public class IceWall implements Spell {
     public Queue<BlockSnapshot> getWallSnapshot(Location<World>[][] wall) {
         Queue<BlockSnapshot> wallSnapshot = new LinkedList();
         for (int i = 0; i < wall.length; i++) {
-            for (int j = 0; j < wall[i].length; j++){
-                if(wall[i][j] != null)
+            for (int j = 0; j < wall[i].length; j++) {
+                if (wall[i][j] != null)
                     wallSnapshot.add(wall[i][j].createSnapshot());
             }
         }
