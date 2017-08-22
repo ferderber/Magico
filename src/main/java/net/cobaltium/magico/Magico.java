@@ -1,7 +1,3 @@
-/**
- * Created by Matt_ on 8/12/2017.
- */
-
 package net.cobaltium.magico;
 
 import net.cobaltium.magico.data.*;
@@ -54,8 +50,10 @@ public class Magico {
         //Listeners
         this.game.getEventManager().registerListeners(this, new MagicoListener(this.plugin));
         SpellType[] spellTypes = SpellList.ALL;
-        for (int i = 0; i < spellTypes.length; i++) {
-            this.game.getEventManager().registerListeners(this, spellTypes[i].getListener());
+        for (SpellType spellType : spellTypes) {
+            if(spellType.getListener() != null) {
+                this.game.getEventManager().registerListeners(this, spellType.getListener());
+            }
         }
     }
 
