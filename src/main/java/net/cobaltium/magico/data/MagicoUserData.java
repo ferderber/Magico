@@ -17,37 +17,52 @@ import java.util.Optional;
 public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagicoUserData> {
     private int mana;
     private String currentSpellName;
+    private boolean scoreboardClosing;
     protected MagicoUserData() {
         this.mana = 100;
         this.currentSpellName = IceWall.class.getName();
+        this.scoreboardClosing = false;
         registerGettersAndSetters();
     }
-    protected MagicoUserData(int mana, String spellName) {
+
+    protected MagicoUserData(int mana, String spellName, boolean scoreboardClosing) {
         this.mana = mana;
         this.currentSpellName = spellName;
+        this.scoreboardClosing = scoreboardClosing;
         registerGettersAndSetters();
     }
     @Override
     protected void registerGettersAndSetters() {
         registerFieldGetter(MagicoKeys.PLAYER_MANA, () -> this.mana);
         registerFieldGetter(MagicoKeys.CURRENT_SPELL, () -> this.currentSpellName);
+        registerFieldGetter(MagicoKeys.SCOREBOARD_CLOSING, () -> this.scoreboardClosing);
         registerFieldSetter(MagicoKeys.PLAYER_MANA, mana -> this.mana = mana);
         registerFieldSetter(MagicoKeys.CURRENT_SPELL, spellName -> this.currentSpellName = spellName);
+        registerFieldSetter(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing -> this.scoreboardClosing = scoreboardClosing);
 
         registerKeyValue(MagicoKeys.CURRENT_SPELL, this::currentSpell);
         registerKeyValue(MagicoKeys.PLAYER_MANA, this::mana);
+        registerKeyValue(MagicoKeys.SCOREBOARD_CLOSING, this::scoreboardClosing);
     }
 
-    public Value<Integer> mana() {
+    private Value<Integer> mana() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.PLAYER_MANA, mana);
     }
 
-    public Value<String> currentSpell() {
+    private Value<String> currentSpell() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.CURRENT_SPELL, currentSpellName);
+    }
+
+    private Value<Boolean> scoreboardClosing() {
+        return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing);
     }
 
     public int getMana() {
         return mana;
+    }
+
+    public boolean getScoreboardClosing() {
+        return scoreboardClosing;
     }
 
     public Optional<Spell> getCurrentSpell() {
@@ -59,6 +74,11 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
     public void setMana(int i) {
         mana = i;
         set(MagicoKeys.PLAYER_MANA, i);
+    }
+
+    public void setScoreboardClosing(boolean b) {
+        scoreboardClosing = b;
+        set(MagicoKeys.SCOREBOARD_CLOSING, b);
     }
 
     public void setCurrentSpell(String spell) {
@@ -105,12 +125,12 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
 
     @Override
     public MagicoUserData copy() {
-        return new MagicoUserData(getMana(), getCurrentSpellName());
+        return new MagicoUserData(getMana(), getCurrentSpellName(), getScoreboardClosing());
     }
 
     @Override
     public ImmutableMagicoUserData asImmutable() {
-        return new ImmutableMagicoUserData(getMana(), getCurrentSpellName());
+        return new ImmutableMagicoUserData(getMana(), getCurrentSpellName(), getScoreboardClosing());
     }
 
     @Override
