@@ -29,4 +29,10 @@ public class MagicoKeys {
             DataQuery.of("magico", "blockDamage"),
             "magico:block_damage",
             "Block Damage");
+    public static Key<Value<Boolean>> SCOREBOARD_CLOSING = KeyFactory.makeSingleKey(TypeTokens.BOOLEAN_TOKEN,
+            new TypeToken<Value<Boolean>>() {
+            },
+            DataQuery.of("magico", "scoreboardClosing"),
+            "magico:scoreboard_closing",
+            "Scoreboard Closing");
 }

@@ -13,36 +13,39 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
 
     int mana;
     String currentSpellName;
+    boolean scoreboardClosing;
 
-    protected ImmutableMagicoUserData(int mana, String spellName) {
+    protected ImmutableMagicoUserData(int mana, String spellName, boolean scoreboardClosing) {
         this.mana = mana;
         this.currentSpellName = spellName;
+        this.scoreboardClosing = scoreboardClosing;
     }
 
     @Override
     protected void registerGetters() {
         registerFieldGetter(MagicoKeys.PLAYER_MANA, () -> this.mana);
         registerFieldGetter(MagicoKeys.CURRENT_SPELL, () -> this.currentSpellName);
+        registerFieldGetter(MagicoKeys.SCOREBOARD_CLOSING, () -> this.scoreboardClosing);
         registerKeyValue(MagicoKeys.CURRENT_SPELL, this::currentSpell);
         registerKeyValue(MagicoKeys.PLAYER_MANA, this::mana);
+        registerKeyValue(MagicoKeys.SCOREBOARD_CLOSING, this::scoreboardClosing);
 }
 
-    public ImmutableValue<Integer> mana() {
+    private ImmutableValue<Integer> mana() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.PLAYER_MANA, mana).asImmutable();
     }
 
-    public ImmutableValue<String> currentSpell() {
+    private ImmutableValue<String> currentSpell() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.CURRENT_SPELL, currentSpellName).asImmutable();
     }
 
-    public Optional<Spell> getCurrentSpell() {
-        SpellFactory factory = new SpellFactory();
-        return factory.getSpell(currentSpellName);
+    private ImmutableValue<Boolean> scoreboardClosing() {
+        return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing).asImmutable();
     }
 
     @Override
     public MagicoUserData asMutable() {
-        return new MagicoUserData(mana, currentSpellName);
+        return new MagicoUserData(mana, currentSpellName, scoreboardClosing);
     }
 
     @Override
