@@ -17,6 +17,12 @@ public class MagicoKeys {
             DataQuery.of("magico", "mana"),
             "magico:mana",
             "Player's mana");
+    public static Key<Value<Integer>> MANA_RESTORE_MULTIPLIER = KeyFactory.makeSingleKey(TypeTokens.INTEGER_TOKEN,
+            new TypeToken<Value<Integer>>() {
+            },
+            DataQuery.of("magico", "manarestore"),
+            "magico:manarestore",
+            "Player's mana restoration rate");
     public static Key<Value<String>> CURRENT_SPELL = KeyFactory.makeSingleKey(TypeTokens.STRING_TOKEN,
             new TypeToken<Value<String>>() {
             },
