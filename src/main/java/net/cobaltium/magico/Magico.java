@@ -22,6 +22,7 @@ import org.spongepowered.api.plugin.PluginManager;
 import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 @Plugin(id = "magico", name = "Magico", version = "0.01")
 public class Magico {
@@ -53,8 +54,28 @@ public class Magico {
                 .dataName("Magico User")
                 .buildAndRegister(plugin);
 
+
+        Database db = new Database();
+        StructureLocation location = new StructureLocation(0, 0, 64, 0);
+        Connection con = null;
+        List<StructureLocation> structures = null;
+        try {
+            con = db.getConnection();
+            DatabaseAccessObject<StructureLocation> locationDao = new DatabaseAccessObject<>(con, StructureLocation.class);
+            locationDao.createTable();
+            structures = locationDao.getAll();
+        } catch (SQLException ex) {
+            logger.error("DB error", ex);
+        } catch (IllegalAccessException ex) {
+            logger.error("Unable to access properties in data object class", ex);
+        } catch (InstantiationException ex) {
+            logger.error("Data Objects must have a default no-arg constructor", ex);
+        } finally {
+            SQLUtils.closeQuietly(con);
+        }
+
         //Listeners
-        this.game.getEventManager().registerListeners(this, new MagicoListener(this.plugin));
+        this.game.getEventManager().registerListeners(this, new MagicoListener(this.plugin, structures));
         SpellType[] spellTypes = SpellList.ALL;
         for (SpellType spellType : spellTypes) {
             if (spellType.getListener() != null) {
@@ -62,18 +83,6 @@ public class Magico {
             }
         }
 
-        Database db = new Database();
-        StructureLocation location = new StructureLocation(0, 1, 2, 3);
-        Connection con = null;
-        try {
-            con = db.getConnection();
-            DatabaseAccessObject<StructureLocation> locationDao = new DatabaseAccessObject<>(con, StructureLocation.class);
-            locationDao.createTable();
-        } catch (SQLException ex) {
-            logger.error("DB error", ex);
-        } finally {
-            SQLUtils.closeQuietly(con);
-        }
     }
 
     @Listener
