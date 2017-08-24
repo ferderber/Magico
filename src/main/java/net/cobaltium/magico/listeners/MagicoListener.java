@@ -77,7 +77,7 @@ public class MagicoListener {
         Player player = event.getTargetEntity();
         Task.builder()
                 .execute(new ManaRestoreTask(player, structures))
-                .interval(1, TimeUnit.SECONDS)
+                .interval(5, TimeUnit.SECONDS)
                 .submit(plugin);
     }
 
