@@ -14,4 +14,9 @@ public class UserSpells {
 
     }
 
+    public UserSpells(UUID user_id, int spell_id) {
+        this.user_id = user_id;
+        this.spell_id = spell_id;
+    }
+
 }
