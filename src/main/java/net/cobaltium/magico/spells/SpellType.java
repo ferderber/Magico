@@ -7,7 +7,8 @@ import java.util.Optional;
 
 public enum SpellType {
     FIREBALL(0, "Fireball", new Fireball(), new FireballListener()),
-    ICE_WALL(1, "Ice Wall", new IceWall(), null);
+    ICE_WALL(1, "Ice Wall", new IceWall(), null),
+    TELEPORT(2, "Teleport", new Teleport(), null);
 
     private int spellId;
     private String spellName;
