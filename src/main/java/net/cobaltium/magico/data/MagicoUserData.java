@@ -78,12 +78,6 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         return scoreboardClosing;
     }
 
-//    public Optional<Spell> getCurrentSpell() {
-//        SpellFactory factory = new SpellFactory();
-//
-//        return factory.getSpell(currentSpellName);
-//    }
-
     public void setMana(int i) {
         mana = i;
         set(MagicoKeys.PLAYER_MANA, i);
