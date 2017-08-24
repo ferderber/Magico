@@ -2,7 +2,7 @@ package net.cobaltium.magico.listeners;
 
 import net.cobaltium.magico.data.MagicoUserData;
 import net.cobaltium.magico.db.tables.StructureLocation;
-import net.cobaltium.magico.spells.*;
+import net.cobaltium.magico.spells.SpellType;
 import net.cobaltium.magico.tasks.ManaRestoreTask;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -43,26 +43,26 @@ public class MagicoListener {
             Player player = player_.get();
             MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
 
-            if (player.get(Keys.IS_SNEAKING).isPresent() && player.get(Keys.IS_SNEAKING).get().booleanValue()) {
-                SpellType spellType = getNextSpellName(userData.getCurrentSpellName());
-                userData.setCurrentSpell(spellType.getKey());
+            if (player.get(Keys.IS_SNEAKING).isPresent() && player.get(Keys.IS_SNEAKING).get()) {
+                SpellType spellType = getNextSpellType(userData.getCurrentSpellId());
+                userData.setCurrentSpellId(spellType.getSpellId());
                 player.offer(userData);
                 player.sendMessage(Text.builder()
                         .append(Text.of("Current spell changed to "))
-                        .append(Text.of(spellType.getName())).color(TextColors.AQUA).build());
+                        .append(Text.of(spellType.getSpellName())).color(TextColors.AQUA).build());
                 updateScoreboard(player, userData);
             } else {
-                Optional<Spell> spell_ = userData.getCurrentSpell();
+                Optional<SpellType> spellType_ = SpellType.getById(userData.getCurrentSpellId());
 
-                Spell spell;
-                if (spell_.isPresent()) {
-                    spell = spell_.get();
+                SpellType spellType;
+                if (spellType_.isPresent()) {
+                    spellType = spellType_.get();
                 } else {
-                    spell = new Fireball();
+                    spellType = SpellType.FIREBALL;
                 }
-                if (userData.getMana() >= spell.getManaCost()) {
-                    spell.handle(plugin, player);
-                    userData.reduceMana(spell.getManaCost());
+                if (userData.getMana() >= spellType.getSpell().getManaCost()) {
+                    spellType.getSpell().handle(plugin, player);
+                    userData.reduceMana(spellType.getSpell().getManaCost());
                     player.offer(userData);
                     updateScoreboard(player, userData);
                 } else {
@@ -91,37 +91,41 @@ public class MagicoListener {
         //Mana score text
         Score manaScore = obj.getOrCreateScore(Text.of("Mana:"));
         manaScore.setScore(userData.getMana());
-        //Current spell score text
-        Score spellScore = obj.getOrCreateScore(Text.builder()
-                .append(Text.of("Spell: "))
-                .append(Text.builder()
-                        .append(Text.of(userData.getCurrentSpellName().replace("net.cobaltium.magico.spells.", "")))
-                        .color(TextColors.BLUE).build())
-                .append(Text.of(", Cost:"))
-                .build());
-        spellScore.setScore(userData.getCurrentSpell().get().getManaCost());
+        Optional<SpellType> spellType_ = SpellType.getById(userData.getCurrentSpellId());
+        if (spellType_.isPresent()) {
+            SpellType spellType = spellType_.get();
+            //Current spell score text
+            Score spellScore = obj.getOrCreateScore(Text.builder()
+                    .append(Text.of("Spell: "))
+                    .append(Text.builder()
+                            .append(Text.of(spellType.getSpellName()))
+                            .color(TextColors.BLUE).build())
+                    .append(Text.of(", Cost:"))
+                    .build());
+            spellScore.setScore(spellType.getSpell().getManaCost());
 
-        scoreboard.addObjective(obj);
-        scoreboard.updateDisplaySlot(obj, DisplaySlots.SIDEBAR);
-        player.setScoreboard(scoreboard);
+            scoreboard.addObjective(obj);
+            scoreboard.updateDisplaySlot(obj, DisplaySlots.SIDEBAR);
+            player.setScoreboard(scoreboard);
 
-        //remove scoreboard after 5 seconds
-        if (!userData.getScoreboardClosing()) {
-            userData.setScoreboardClosing(true);
-            player.offer(userData);
-            Task.builder().delay(5, TimeUnit.SECONDS).execute(() -> {
-                MagicoUserData user = player.getOrCreate(MagicoUserData.class).get();
-                player.setScoreboard(Scoreboard.builder().build());
-                user.setScoreboardClosing(false);
-                player.offer(user);
-            }).submit(plugin);
+            //remove scoreboard after 5 seconds
+            if (!userData.getScoreboardClosing()) {
+                userData.setScoreboardClosing(true);
+                player.offer(userData);
+                Task.builder().delay(5, TimeUnit.SECONDS).execute(() -> {
+                    MagicoUserData user = player.getOrCreate(MagicoUserData.class).get();
+                    player.setScoreboard(Scoreboard.builder().build());
+                    user.setScoreboardClosing(false);
+                    player.offer(user);
+                }).submit(plugin);
+            }
         }
     }
 
-    public SpellType getNextSpellName(String spellName) {
-        SpellType[] spells = SpellList.ALL;
+    public SpellType getNextSpellType(int spellId) {
+        SpellType[] spells = SpellType.values();
         for (int i = 0; i < spells.length; i++) {
-            if (spells[i].getKey() == spellName) {
+            if (spells[i].getSpellId() == spellId) {
                 if (i < spells.length - 1) {
                     return spells[i + 1];
                 } else {

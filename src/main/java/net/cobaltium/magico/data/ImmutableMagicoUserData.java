@@ -1,24 +1,20 @@
 package net.cobaltium.magico.data;
 
 import net.cobaltium.magico.MagicoKeys;
-import net.cobaltium.magico.spells.Spell;
-import net.cobaltium.magico.spells.SpellFactory;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.manipulator.immutable.common.AbstractImmutableData;
 import org.spongepowered.api.data.value.immutable.ImmutableValue;
 
-import java.util.Optional;
-
-public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagicoUserData, MagicoUserData>{
+public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagicoUserData, MagicoUserData> {
 
     private int mana;
     private int manaRestoreMultiplier;
-    private String currentSpellName;
+    private int currentSpellId;
     private boolean scoreboardClosing;
 
-    protected ImmutableMagicoUserData(int mana, String spellName, boolean scoreboardClosing, int manaRestoreMultiplier) {
+    protected ImmutableMagicoUserData(int mana, int spellId, boolean scoreboardClosing, int manaRestoreMultiplier) {
         this.mana = mana;
-        this.currentSpellName = spellName;
+        this.currentSpellId = spellId;
         this.scoreboardClosing = scoreboardClosing;
         this.manaRestoreMultiplier = manaRestoreMultiplier;
         registerGetters();
@@ -29,15 +25,15 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
         registerFieldGetter(MagicoKeys.PLAYER_MANA, () -> this.mana);
         registerKeyValue(MagicoKeys.PLAYER_MANA, this::mana);
 
-        registerFieldGetter(MagicoKeys.CURRENT_SPELL, () -> this.currentSpellName);
-        registerKeyValue(MagicoKeys.CURRENT_SPELL, this::currentSpell);
+        registerFieldGetter(MagicoKeys.CURRENT_SPELL, () -> this.currentSpellId);
+        registerKeyValue(MagicoKeys.CURRENT_SPELL, this::currentSpellId);
 
         registerFieldGetter(MagicoKeys.SCOREBOARD_CLOSING, () -> this.scoreboardClosing);
         registerKeyValue(MagicoKeys.SCOREBOARD_CLOSING, this::scoreboardClosing);
 
         registerFieldGetter(MagicoKeys.MANA_RESTORE_MULTIPLIER, () -> this.manaRestoreMultiplier);
         registerKeyValue(MagicoKeys.MANA_RESTORE_MULTIPLIER, this::manaRestoreMultiplier);
-}
+    }
 
     private ImmutableValue<Integer> mana() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.PLAYER_MANA, mana).asImmutable();
@@ -47,8 +43,8 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.MANA_RESTORE_MULTIPLIER, manaRestoreMultiplier).asImmutable();
     }
 
-    private ImmutableValue<String> currentSpell() {
-        return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.CURRENT_SPELL, currentSpellName).asImmutable();
+    private ImmutableValue<Integer> currentSpellId() {
+        return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.CURRENT_SPELL, currentSpellId).asImmutable();
     }
 
     private ImmutableValue<Boolean> scoreboardClosing() {
@@ -57,7 +53,7 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
 
     @Override
     public MagicoUserData asMutable() {
-        return new MagicoUserData(mana, currentSpellName, scoreboardClosing, manaRestoreMultiplier);
+        return new MagicoUserData(mana, currentSpellId, scoreboardClosing, manaRestoreMultiplier);
     }
 
     @Override

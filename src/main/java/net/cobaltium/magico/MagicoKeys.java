@@ -23,12 +23,12 @@ public class MagicoKeys {
             DataQuery.of("magico", "manarestore"),
             "magico:manarestore",
             "Player's mana restoration rate");
-    public static Key<Value<String>> CURRENT_SPELL = KeyFactory.makeSingleKey(TypeTokens.STRING_TOKEN,
-            new TypeToken<Value<String>>() {
+    public static Key<Value<Integer>> CURRENT_SPELL = KeyFactory.makeSingleKey(TypeTokens.INTEGER_TOKEN,
+            new TypeToken<Value<Integer>>() {
             },
             DataQuery.of("magico", "spell"),
             "magico:spell",
-            "Player's spell");
+            "Player's current spell ID");
     public static Key<Value<Boolean>> DOES_BLOCK_DAMAGE = KeyFactory.makeSingleKey(TypeTokens.BOOLEAN_TOKEN,
             new TypeToken<Value<Boolean>>() {
             },

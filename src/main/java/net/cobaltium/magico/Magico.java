@@ -6,7 +6,6 @@ import net.cobaltium.magico.db.DatabaseAccessObject;
 import net.cobaltium.magico.db.tables.StructureLocation;
 import net.cobaltium.magico.db.utils.SQLUtils;
 import net.cobaltium.magico.listeners.MagicoListener;
-import net.cobaltium.magico.spells.SpellList;
 import net.cobaltium.magico.spells.SpellType;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
@@ -74,9 +73,10 @@ public class Magico {
             SQLUtils.closeQuietly(con);
         }
 
+
         //Listeners
         this.game.getEventManager().registerListeners(this, new MagicoListener(this.plugin, structures));
-        SpellType[] spellTypes = SpellList.ALL;
+        SpellType[] spellTypes = SpellType.values();
         for (SpellType spellType : spellTypes) {
             if (spellType.getListener() != null) {
                 this.game.getEventManager().registerListeners(this, spellType.getListener());
