@@ -4,7 +4,7 @@ import com.flowpowered.math.vector.Vector3i;
 
 public class StructureLocation {
 
-    @DataColumn(primaryKey = true)
+    @DataColumn(primaryKey = true, autoIncrement = true)
     private long id;
     @DataColumn
     private int type;

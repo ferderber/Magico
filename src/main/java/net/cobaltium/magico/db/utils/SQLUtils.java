@@ -1,5 +1,6 @@
 package net.cobaltium.magico.db.utils;
 
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -12,6 +13,25 @@ public class SQLUtils {
             }
         } catch (SQLException ex) {
 
+        }
+    }
+
+    public static String getDatabaseType(Type t) {
+        switch (t.getTypeName()) {
+            case "String":
+                return "varchar";
+            case "int":
+            case "integer":
+            case "Integer":
+                return "int";
+            case "Double":
+                return "double";
+            case "Boolean":
+                return "boolean";
+            case "UUID":
+                return "UUID";
+            default:
+                return "varchar";
         }
     }
 }

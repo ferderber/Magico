@@ -6,4 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DataColumn {
     boolean primaryKey() default false;
+
+    boolean autoIncrement() default false;
 }

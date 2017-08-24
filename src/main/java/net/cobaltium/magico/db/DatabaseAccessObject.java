@@ -1,6 +1,7 @@
 package net.cobaltium.magico.db;
 
 import net.cobaltium.magico.db.tables.DataColumn;
+import net.cobaltium.magico.db.utils.SQLUtils;
 import org.spongepowered.api.util.Tuple;
 
 import java.lang.reflect.Field;
@@ -14,6 +15,7 @@ import java.util.List;
 public class DatabaseAccessObject<T> {
 
     private List<Tuple<Field, DataColumn>> fields;
+    private Field primaryField;
     private String insertString;
     private Class<? extends T> tableClass;
     private Connection con;
@@ -28,6 +30,9 @@ public class DatabaseAccessObject<T> {
             if (annotation != null) {
                 columns.add(Tuple.of(field, annotation));
             }
+            if (annotation.primaryKey()) {
+                this.primaryField = field;
+            }
         }
         this.fields = columns;
         this.insertString = getInsertString();
@@ -41,12 +46,17 @@ public class DatabaseAccessObject<T> {
             valuesBuilder.append(") VALUES (");
             for (int i = 0; i < fields.size(); i++) {
                 DataColumn dc = fields.get(i).getSecond();
-                if (!dc.primaryKey()) {
+                if (!dc.primaryKey() || !dc.autoIncrement()) {
                     insertBuilder.append(fields.get(i).getFirst().getName());
                     if (i != fields.size() - 1) {
                         insertBuilder.append(", ");
                     }
-                    valuesBuilder.append("%s");
+                    String type = SQLUtils.getDatabaseType(fields.get(i).getFirst().getGenericType());
+                    if (type == "varchar" || type == "uuid") {
+                        valuesBuilder.append("'%s'");
+                    } else {
+                        valuesBuilder.append("%s");
+                    }
                     if (i != fields.size() - 1) {
                         valuesBuilder.append(", ");
                     }
@@ -62,7 +72,7 @@ public class DatabaseAccessObject<T> {
     public void insert(T sqlObject) throws SQLException, IllegalAccessException {
         List<Object> objects = new ArrayList<>();
         for (Tuple<Field, DataColumn> f : fields) {
-            if (!f.getSecond().primaryKey()) {
+            if (!f.getSecond().primaryKey() || !f.getSecond().autoIncrement()) {
                 f.getFirst().setAccessible(true);
                 objects.add(f.getFirst().get(sqlObject));
             }
@@ -90,6 +100,16 @@ public class DatabaseAccessObject<T> {
         return objs;
     }
 
+    public List<T> getAllById(String s) throws IllegalAccessException, SQLException, InstantiationException {
+        List<T> objs = new ArrayList<>();
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery("select * from " + tableClass.getSimpleName() + " where " + primaryField.getName() + " = " + s + ";");
+        while (rs.next()) {
+            objs.add(createObject(rs));
+        }
+        return objs;
+    }
+
     public void createTable() throws SQLException {
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("CREATE TABLE IF NOT EXISTS ").append(tableClass.getSimpleName()).append(" (");
@@ -97,9 +117,12 @@ public class DatabaseAccessObject<T> {
             DataColumn dc = fields.get(i).getSecond();
             sqlBuilder.append(fields.get(i).getFirst().getName())
                     .append(" ")
-                    .append(fields.get(i).getFirst().getGenericType().getTypeName());
+                    .append(SQLUtils.getDatabaseType(fields.get(i).getFirst().getGenericType()));
+            if (dc.autoIncrement()) {
+                sqlBuilder.append((" auto_increment"));
+            }
             if (dc.primaryKey()) {
-                sqlBuilder.append(" auto_increment PRIMARY KEY");
+                sqlBuilder.append(" PRIMARY KEY");
             }
             if (i != fields.size() - 1) {
                 sqlBuilder.append(", ");
