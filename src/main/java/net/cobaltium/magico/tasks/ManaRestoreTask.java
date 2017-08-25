@@ -6,21 +6,21 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class ManaRestoreTask implements Consumer<Task> {
 
-    private Player player;
     private List<StructureLocation> structures;
 
-    public ManaRestoreTask(Player player, List<StructureLocation> structures) {
-        this.player = player;
+    public ManaRestoreTask(List<StructureLocation> structures) {
         this.structures = structures;
     }
 
     public void accept(Task task) {
-        if (Sponge.getServer().getOnlinePlayers().contains(player)) {
+        Collection<Player> players = Sponge.getServer().getOnlinePlayers();
+        players.forEach((player) -> {
             for (StructureLocation structure : structures) {
                 double distance = player.getLocation().getPosition().distance(structure.getBlockLocation().toDouble());
                 if (distance <= 100) {
@@ -32,8 +32,6 @@ public class ManaRestoreTask implements Consumer<Task> {
                     break;
                 }
             }
-        } else {
-            task.cancel();
-        }
+        });
     }
 }

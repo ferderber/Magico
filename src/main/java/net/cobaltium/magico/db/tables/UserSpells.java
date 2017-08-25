@@ -22,5 +22,4 @@ public class UserSpells {
         this.spell_id = spell_id;
         this.level = level;
     }
-
 }

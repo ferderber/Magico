@@ -3,13 +3,11 @@ package net.cobaltium.magico.listeners;
 import net.cobaltium.magico.data.MagicoUserData;
 import net.cobaltium.magico.db.tables.StructureLocation;
 import net.cobaltium.magico.spells.SpellType;
-import net.cobaltium.magico.tasks.ManaRestoreTask;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.item.inventory.InteractItemEvent;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
@@ -70,15 +68,6 @@ public class MagicoListener {
                 }
             }
         }
-    }
-
-    @Listener
-    public void playerJoin(ClientConnectionEvent.Join event) {
-        Player player = event.getTargetEntity();
-        Task.builder()
-                .execute(new ManaRestoreTask(player, structures))
-                .interval(5, TimeUnit.SECONDS)
-                .submit(plugin);
     }
 
     public void updateScoreboard(Player player, MagicoUserData userData) {

@@ -1,12 +1,18 @@
 package net.cobaltium.magico;
 
-import net.cobaltium.magico.data.*;
+import net.cobaltium.magico.data.ImmutableMagicoProjectileData;
+import net.cobaltium.magico.data.ImmutableMagicoUserData;
+import net.cobaltium.magico.data.MagicoProjectileBuilder;
+import net.cobaltium.magico.data.MagicoProjectileData;
+import net.cobaltium.magico.data.MagicoUserBuilder;
+import net.cobaltium.magico.data.MagicoUserData;
 import net.cobaltium.magico.db.Database;
 import net.cobaltium.magico.db.DatabaseAccessObject;
 import net.cobaltium.magico.db.tables.StructureLocation;
 import net.cobaltium.magico.db.utils.SQLUtils;
 import net.cobaltium.magico.listeners.MagicoListener;
 import net.cobaltium.magico.spells.SpellType;
+import net.cobaltium.magico.tasks.ManaRestoreTask;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.data.DataRegistration;
@@ -17,11 +23,14 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.api.scheduler.Task;
 
-import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 @Plugin(id = "magico", name = "Magico", version = "0.01")
 public class Magico {
@@ -72,7 +81,10 @@ public class Magico {
         } finally {
             SQLUtils.closeQuietly(con);
         }
-
+        Task.builder()
+                .execute(new ManaRestoreTask(structures))
+                .interval(5, TimeUnit.SECONDS)
+                .submit(plugin);
 
         //Listeners
         this.game.getEventManager().registerListeners(this, new MagicoListener(this.plugin, structures));
