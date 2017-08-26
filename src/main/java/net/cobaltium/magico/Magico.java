@@ -52,8 +52,8 @@ public class Magico {
         DataRegistration.builder().dataClass(MagicoProjectileData.class)
                 .immutableClass(ImmutableMagicoProjectileData.class)
                 .builder(new MagicoProjectileBuilder())
-                .manipulatorId("player-fireball")
-                .dataName("Player Fireball")
+                .manipulatorId("projectile-data")
+                .dataName("Magico Projectile data")
                 .buildAndRegister(plugin);
         DataRegistration.builder().dataClass(MagicoUserData.class)
                 .immutableClass(ImmutableMagicoUserData.class)
@@ -94,7 +94,6 @@ public class Magico {
                 this.game.getEventManager().registerListeners(this, spellType.getListener());
             }
         }
-
     }
 
     @Listener

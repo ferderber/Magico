@@ -15,39 +15,41 @@ public class MagicoProjectileData extends AbstractData<MagicoProjectileData, Imm
 
     private boolean blockDamage;
 
-    protected MagicoProjectileData() {
+    public MagicoProjectileData() {
         this(false);
     }
-    protected MagicoProjectileData(boolean value) {
+
+    public MagicoProjectileData(boolean value) {
         this.blockDamage = value;
         registerGettersAndSetters();
     }
 
     @Override
     protected void registerGettersAndSetters() {
-        registerFieldGetter(MagicoKeys.DOES_BLOCK_DAMAGE, () -> this.blockDamage);
-        registerFieldSetter(MagicoKeys.DOES_BLOCK_DAMAGE, blockDamage -> this.blockDamage = blockDamage);
+        registerFieldGetter(MagicoKeys.DOES_BLOCK_DAMAGE, this::doesBlockDamage);
+        registerFieldSetter(MagicoKeys.DOES_BLOCK_DAMAGE, this::setBlockDamage);
         registerKeyValue(MagicoKeys.DOES_BLOCK_DAMAGE, this::blockDamage);
     }
 
-    public  Value<Boolean> blockDamage() {
+    public Value<Boolean> blockDamage() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.DOES_BLOCK_DAMAGE, blockDamage);
     }
 
     public boolean doesBlockDamage() {
-        return get(MagicoKeys.DOES_BLOCK_DAMAGE).get();
+        return blockDamage;
     }
+
     public void setBlockDamage(boolean blockDamage) {
-        set(MagicoKeys.DOES_BLOCK_DAMAGE, blockDamage);
+        this.blockDamage = blockDamage;
     }
 
     @Override
     public Optional<MagicoProjectileData> fill(DataHolder dataHolder, MergeFunction overlap) {
         Optional<MagicoProjectileData> data_ = dataHolder.get(MagicoProjectileData.class);
-        if(data_.isPresent()) {
+        if (data_.isPresent()) {
             MagicoProjectileData data = data_.get();
             MagicoProjectileData mergedData = overlap.merge(this, data);
-            setBlockDamage(mergedData.doesBlockDamage());
+            this.blockDamage = mergedData.doesBlockDamage();
         }
         return Optional.of(this);
     }
@@ -58,8 +60,8 @@ public class MagicoProjectileData extends AbstractData<MagicoProjectileData, Imm
     }
 
     public Optional<MagicoProjectileData> from(DataView view) {
-        if(view.contains(MagicoKeys.DOES_BLOCK_DAMAGE.getQuery())) {
-            setBlockDamage(view.getBoolean(MagicoKeys.DOES_BLOCK_DAMAGE.getQuery()).get());
+        if (view.contains(MagicoKeys.DOES_BLOCK_DAMAGE.getQuery())) {
+            this.blockDamage = view.getBoolean(MagicoKeys.DOES_BLOCK_DAMAGE.getQuery()).get();
             return Optional.of(this);
         } else {
             return Optional.empty();
@@ -68,17 +70,22 @@ public class MagicoProjectileData extends AbstractData<MagicoProjectileData, Imm
 
     @Override
     public MagicoProjectileData copy() {
-        return new MagicoProjectileData(doesBlockDamage());
+        return new MagicoProjectileData(blockDamage);
     }
 
     @Override
     public ImmutableMagicoProjectileData asImmutable() {
-        return new ImmutableMagicoProjectileData(doesBlockDamage());
+        return new ImmutableMagicoProjectileData(blockDamage);
     }
 
     @Override
     public int getContentVersion() {
-        return 0;
+        return 1;
+    }
+
+    @Override
+    public DataContainer toContainer() {
+        return super.toContainer().set(MagicoKeys.DOES_BLOCK_DAMAGE, blockDamage);
     }
 
 }

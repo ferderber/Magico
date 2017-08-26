@@ -13,17 +13,14 @@ import org.spongepowered.api.data.value.mutable.Value;
 import java.util.Optional;
 
 public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagicoUserData> {
+
     private int mana;
     private int currentSpellId;
     private boolean scoreboardClosing;
     private int manaRestoreMultiplier;
 
     protected MagicoUserData() {
-        this.mana = 100;
-        this.currentSpellId = SpellType.FIREBALL.getSpellId();
-        this.scoreboardClosing = false;
-        this.manaRestoreMultiplier = 1;
-        registerGettersAndSetters();
+        this(100, SpellType.FIREBALL.getSpellId(), false, 1);
     }
 
     protected MagicoUserData(int mana, int spellId, boolean scoreboardClosing, int manaRestoreMultiplier) {
@@ -36,37 +33,36 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
 
     @Override
     protected void registerGettersAndSetters() {
-        registerFieldGetter(MagicoKeys.PLAYER_MANA, () -> this.mana);
-        registerFieldSetter(MagicoKeys.PLAYER_MANA, mana -> this.mana = mana);
+        registerFieldGetter(MagicoKeys.PLAYER_MANA, this::getMana);
+        registerFieldSetter(MagicoKeys.PLAYER_MANA, this::setMana);
         registerKeyValue(MagicoKeys.PLAYER_MANA, this::mana);
 
-        registerFieldGetter(MagicoKeys.CURRENT_SPELL, () -> this.currentSpellId);
-        registerFieldSetter(MagicoKeys.CURRENT_SPELL, spellId -> this.currentSpellId = spellId);
+        registerFieldGetter(MagicoKeys.CURRENT_SPELL, this::getCurrentSpellId);
+        registerFieldSetter(MagicoKeys.CURRENT_SPELL, this::setCurrentSpellId);
         registerKeyValue(MagicoKeys.CURRENT_SPELL, this::currentSpellId);
 
-        registerFieldGetter(MagicoKeys.SCOREBOARD_CLOSING, () -> this.scoreboardClosing);
-        registerFieldSetter(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing -> this.scoreboardClosing = scoreboardClosing);
+        registerFieldGetter(MagicoKeys.SCOREBOARD_CLOSING, this::getScoreboardClosing);
+        registerFieldSetter(MagicoKeys.SCOREBOARD_CLOSING, this::setScoreboardClosing);
         registerKeyValue(MagicoKeys.SCOREBOARD_CLOSING, this::scoreboardClosing);
 
-        registerFieldGetter(MagicoKeys.MANA_RESTORE_MULTIPLIER, () -> this.manaRestoreMultiplier);
-        registerFieldSetter(MagicoKeys.MANA_RESTORE_MULTIPLIER, manaRestoreMultiplier -> this.manaRestoreMultiplier = manaRestoreMultiplier);
+        registerFieldGetter(MagicoKeys.MANA_RESTORE_MULTIPLIER, this::getManaRestoreMultiplier);
+        registerFieldSetter(MagicoKeys.MANA_RESTORE_MULTIPLIER, this::setManaRestoreMultiplier);
         registerKeyValue(MagicoKeys.MANA_RESTORE_MULTIPLIER, this::manaRestoreMultiplier);
-
     }
 
-    private Value<Integer> mana() {
+    public Value<Integer> mana() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.PLAYER_MANA, mana);
     }
 
-    private Value<Integer> manaRestoreMultiplier() {
+    public Value<Integer> manaRestoreMultiplier() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.MANA_RESTORE_MULTIPLIER, manaRestoreMultiplier);
     }
 
-    private Value<Integer> currentSpellId() {
+    public Value<Integer> currentSpellId() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.CURRENT_SPELL, currentSpellId);
     }
 
-    private Value<Boolean> scoreboardClosing() {
+    public Value<Boolean> scoreboardClosing() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing);
     }
 
@@ -78,44 +74,32 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         return scoreboardClosing;
     }
 
-    public void setMana(int i) {
-        mana = i;
-        set(MagicoKeys.PLAYER_MANA, i);
-    }
-
-    public void setScoreboardClosing(boolean b) {
-        scoreboardClosing = b;
-        set(MagicoKeys.SCOREBOARD_CLOSING, b);
-    }
-
-    public void setCurrentSpellId(int spellId) {
-        this.currentSpellId = spellId;
-        set(MagicoKeys.CURRENT_SPELL, spellId);
-    }
-
     public int getCurrentSpellId() {
         return currentSpellId;
-    }
-
-    public void setManaRestoreMultiplier(int restoreRate) {
-        manaRestoreMultiplier = restoreRate;
-        set(MagicoKeys.MANA_RESTORE_MULTIPLIER, manaRestoreMultiplier);
     }
 
     public int getManaRestoreMultiplier() {
         return manaRestoreMultiplier;
     }
 
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
 
-    public int reduceMana(int amount) {
-        mana = mana - amount;
-        set(MagicoKeys.PLAYER_MANA, mana);
-        return mana;
+    public void setScoreboardClosing(boolean scoreboardClosing) {
+        this.scoreboardClosing = scoreboardClosing;
+    }
+
+    public void setCurrentSpellId(int spellId) {
+        this.currentSpellId = spellId;
+    }
+
+    public void setManaRestoreMultiplier(int restoreRate) {
+        this.manaRestoreMultiplier = restoreRate;
     }
 
     public int modifyMana(int amount) {
-        mana = mana + amount;
-        set(MagicoKeys.PLAYER_MANA, mana);
+        this.mana = mana + amount;
         return mana;
     }
 
@@ -126,16 +110,16 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
 
     public Optional<MagicoUserData> from(DataView dataView) {
         if (dataView.contains(MagicoKeys.PLAYER_MANA.getQuery())) {
-            setMana(dataView.getInt(MagicoKeys.PLAYER_MANA.getQuery()).get());
+            this.mana = dataView.getInt(MagicoKeys.PLAYER_MANA.getQuery()).get();
         }
         if (dataView.contains(MagicoKeys.CURRENT_SPELL.getQuery())) {
-            setCurrentSpellId(dataView.getInt(MagicoKeys.CURRENT_SPELL.getQuery()).get());
+            this.currentSpellId = dataView.getInt(MagicoKeys.CURRENT_SPELL.getQuery()).get();
         }
         if (dataView.contains(MagicoKeys.MANA_RESTORE_MULTIPLIER.getQuery())) {
-            setManaRestoreMultiplier(dataView.getInt(MagicoKeys.MANA_RESTORE_MULTIPLIER.getQuery()).get());
+            this.manaRestoreMultiplier = dataView.getInt(MagicoKeys.MANA_RESTORE_MULTIPLIER.getQuery()).get();
         }
         if (dataView.contains(MagicoKeys.SCOREBOARD_CLOSING.getQuery())) {
-            setScoreboardClosing(dataView.getBoolean(MagicoKeys.SCOREBOARD_CLOSING.getQuery()).get());
+            this.scoreboardClosing = dataView.getBoolean(MagicoKeys.SCOREBOARD_CLOSING.getQuery()).get();
         }
         return Optional.of(this);
     }
@@ -146,8 +130,10 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         if (data_.isPresent()) {
             MagicoUserData data = data_.get();
             MagicoUserData mergedData = overlap.merge(this, data);
-            setMana(mergedData.getMana());
-            setCurrentSpellId(mergedData.getCurrentSpellId());
+            this.mana = mergedData.mana;
+            this.currentSpellId = mergedData.currentSpellId;
+            this.scoreboardClosing = mergedData.scoreboardClosing;
+            this.manaRestoreMultiplier = mergedData.manaRestoreMultiplier;
         }
         return Optional.of(this);
     }
@@ -164,7 +150,16 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
     }
 
     @Override
+    public DataContainer toContainer() {
+        return super.toContainer()
+                .set(MagicoKeys.CURRENT_SPELL, currentSpellId)
+                .set(MagicoKeys.PLAYER_MANA, mana)
+                .set(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing)
+                .set(MagicoKeys.MANA_RESTORE_MULTIPLIER, manaRestoreMultiplier);
+    }
+
+    @Override
     public int getContentVersion() {
-        return 0;
+        return 1;
     }
 }

@@ -60,7 +60,7 @@ public class MagicoListener {
                 }
                 if (userData.getMana() >= spellType.getSpell().getManaCost()) {
                     spellType.getSpell().handle(plugin, player);
-                    userData.reduceMana(spellType.getSpell().getManaCost());
+                    userData.modifyMana(-spellType.getSpell().getManaCost());
                     player.offer(userData);
                     updateScoreboard(player, userData);
                 } else {

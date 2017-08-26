@@ -8,9 +8,11 @@ import org.spongepowered.api.data.persistence.InvalidDataException;
 
 import java.util.Optional;
 
-public class MagicoProjectileBuilder extends AbstractDataBuilder<MagicoProjectileData> implements DataManipulatorBuilder<MagicoProjectileData, ImmutableMagicoProjectileData> {
+public class MagicoProjectileBuilder extends AbstractDataBuilder<MagicoProjectileData>
+        implements DataManipulatorBuilder<MagicoProjectileData, ImmutableMagicoProjectileData> {
+
     public MagicoProjectileBuilder() {
-        super(MagicoProjectileData.class, 0);
+        super(MagicoProjectileData.class, 1);
     }
 
     @Override

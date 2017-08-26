@@ -34,6 +34,7 @@ public class ImmutableMagicoProjectileData extends AbstractImmutableData<Immutab
     public DataContainer toContainer() {
         return super.toContainer().set(MagicoKeys.DOES_BLOCK_DAMAGE.getQuery(), blockDamage);
     }
+
     @Override
     public int getContentVersion() {
         return 0;

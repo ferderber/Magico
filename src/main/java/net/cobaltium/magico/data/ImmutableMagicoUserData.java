@@ -58,6 +58,6 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
 
     @Override
     public int getContentVersion() {
-        return 0;
+        return 1;
     }
 }
