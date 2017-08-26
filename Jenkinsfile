@@ -8,7 +8,7 @@ pipeline {
     }
     stage('Report') {
       steps {
-        archiveArtifacts 'build/libs/*magico.jar'
+        archiveArtifacts 'build/libs/*magico*.jar'
       }
     }
   }
