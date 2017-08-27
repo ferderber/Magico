@@ -39,32 +39,38 @@ public class MagicoListener {
         Optional<Player> player_ = c.first(Player.class);
         if (player_.isPresent() && e.getItemStack().getType() == ItemTypes.STICK) {
             Player player = player_.get();
-            MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
+            if (player.hasPermission("magico.spells")) {
+                MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
 
-            if (player.get(Keys.IS_SNEAKING).isPresent() && player.get(Keys.IS_SNEAKING).get()) {
-                SpellType spellType = getNextSpellType(userData.getCurrentSpellId());
-                userData.setCurrentSpellId(spellType.getSpellId());
-                player.offer(userData);
-                player.sendMessage(Text.builder()
-                        .append(Text.of("Current spell changed to "))
-                        .append(Text.of(spellType.getSpellName())).color(TextColors.AQUA).build());
-                updateScoreboard(player, userData);
-            } else {
-                Optional<SpellType> spellType_ = SpellType.getById(userData.getCurrentSpellId());
-
-                SpellType spellType;
-                if (spellType_.isPresent()) {
-                    spellType = spellType_.get();
-                } else {
-                    spellType = SpellType.FIREBALL;
-                }
-                if (userData.getMana() >= spellType.getSpell().getManaCost()) {
-                    spellType.getSpell().handle(plugin, player);
-                    userData.modifyMana(-spellType.getSpell().getManaCost());
+                if (player.get(Keys.IS_SNEAKING).isPresent() && player.get(Keys.IS_SNEAKING).get()) {
+                    SpellType spellType = getNextSpellType(userData.getCurrentSpellId());
+                    userData.setCurrentSpellId(spellType.getSpellId());
                     player.offer(userData);
+                    player.sendMessage(Text.builder()
+                            .append(Text.of("Current spell changed to "))
+                            .append(Text.of(spellType.getSpellName())).color(TextColors.AQUA).build());
                     updateScoreboard(player, userData);
                 } else {
-                    player.sendMessage(Text.of("Not enough mana"));
+                    Optional<SpellType> spellType_ = SpellType.getById(userData.getCurrentSpellId());
+
+                    SpellType spellType;
+                    if (spellType_.isPresent()) {
+                        spellType = spellType_.get();
+                    } else {
+                        spellType = SpellType.FIREBALL;
+                    }
+                    if (player.hasPermission(spellType.getPermission())) {
+                        if (userData.getMana() >= spellType.getSpell().getManaCost()) {
+                            spellType.getSpell().handle(plugin, player);
+                            userData.modifyMana(-spellType.getSpell().getManaCost());
+                            player.offer(userData);
+                            updateScoreboard(player, userData);
+                        } else {
+                            player.sendMessage(Text.of("Not enough mana"));
+                        }
+                    } else {
+                        player.sendMessage(Text.of("Permission required to use " + spellType.getSpellName()));
+                    }
                 }
             }
         }
