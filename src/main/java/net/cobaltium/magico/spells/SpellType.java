@@ -33,6 +33,15 @@ public enum SpellType {
         return Optional.empty();
     }
 
+    public static Optional<SpellType> getByName(String spellName) {
+        for (SpellType spellType : values()) {
+            if (spellType.spellName.equalsIgnoreCase(spellName)) {
+                return Optional.of(spellType);
+            }
+        }
+        return Optional.empty();
+    }
+
     public int getSpellId() {
         return spellId;
     }
