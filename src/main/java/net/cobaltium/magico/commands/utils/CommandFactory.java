@@ -1,7 +1,6 @@
 package net.cobaltium.magico.commands.utils;
 
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 
 import java.util.ArrayList;
@@ -23,15 +22,15 @@ public class CommandFactory {
         return instance;
     }
 
-    public void registerCommands(Object plugin, CommandExecutor... executors) {
-        List<CommandExecutor> parentCommands = new ArrayList<>();
-        Map<String, List<CommandExecutor>> childMap = new HashMap<>();
+    public void registerCommands(Object plugin, BaseCommandExecutor... executors) {
+        List<BaseCommandExecutor> parentCommands = new ArrayList<>();
+        Map<String, List<BaseCommandExecutor>> childMap = new HashMap<>();
         for (int i = 0; i < executors.length; i++) {
             Class commandClass = executors[i].getClass();
             ParentCommand parentAnnotation = (ParentCommand) commandClass.getAnnotation(ParentCommand.class);
             if (parentAnnotation != null) {
                 String parentName = parentAnnotation.parent().getName();
-                List<CommandExecutor> childCommands = childMap.get(parentName);
+                List<BaseCommandExecutor> childCommands = childMap.get(parentName);
                 if (childCommands == null) {
                     childCommands = new ArrayList<>();
                 }
@@ -41,20 +40,20 @@ public class CommandFactory {
                 parentCommands.add(executors[i]);
             }
         }
-        for (CommandExecutor parent : parentCommands) {
-            CommandSpec.Builder builder = CommandSpec.builder();
+        for (BaseCommandExecutor parent : parentCommands) {
+            CommandSpec.Builder builder = parent.getCommandSpecBuilder();
             Class parentClass = parent.getClass();
             Command commandAnnotation = (Command) parentClass.getAnnotation(Command.class);
 
-            builder.executor(parent).permission(commandAnnotation.permission());
+            builder.permission(commandAnnotation.permission());
 
-            List<CommandExecutor> children = childMap.get(parentClass.getName());
+            List<BaseCommandExecutor> children = childMap.get(parentClass.getName());
 
             if (!children.isEmpty()) {
                 children.forEach(child -> {
                     Class childClass = child.getClass();
                     Command childCommandAnnotation = (Command) childClass.getAnnotation(Command.class);
-                    CommandSpec childSpec = CommandSpec.builder().executor(child)
+                    CommandSpec childSpec = child.getCommandSpecBuilder()
                             .permission(childCommandAnnotation.permission()).build();
                     builder.child(childSpec, childCommandAnnotation.aliases());
                 });
