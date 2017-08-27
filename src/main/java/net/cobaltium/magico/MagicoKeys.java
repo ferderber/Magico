@@ -8,6 +8,7 @@ import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.util.TypeTokens;
 
 public class MagicoKeys {
+
     private MagicoKeys() {
     }
 
