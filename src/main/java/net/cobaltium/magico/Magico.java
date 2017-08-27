@@ -1,5 +1,9 @@
 package net.cobaltium.magico;
 
+import net.cobaltium.magico.commands.user.UserCommand;
+import net.cobaltium.magico.commands.user.UserGiveSpellCommand;
+import net.cobaltium.magico.commands.user.UserSetManaCommand;
+import net.cobaltium.magico.commands.utils.CommandFactory;
 import net.cobaltium.magico.data.ImmutableMagicoProjectileData;
 import net.cobaltium.magico.data.ImmutableMagicoUserData;
 import net.cobaltium.magico.data.MagicoProjectileBuilder;
@@ -94,6 +98,10 @@ public class Magico {
                 this.game.getEventManager().registerListeners(this, spellType.getListener());
             }
         }
+
+        CommandFactory.getInstance().registerCommands(this,
+                new UserCommand(), new UserGiveSpellCommand(), new UserSetManaCommand());
+
     }
 
     @Listener
