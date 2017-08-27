@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class UserSpells {
 
-    @DataColumn(primaryKey = true)
+    @DataColumn()
     private UUID user_id;
 
     @DataColumn
