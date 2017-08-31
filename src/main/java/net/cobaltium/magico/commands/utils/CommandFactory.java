@@ -48,8 +48,7 @@ public class CommandFactory {
             builder.permission(commandAnnotation.permission());
 
             List<BaseCommandExecutor> children = childMap.get(parentClass.getName());
-
-            if (!children.isEmpty()) {
+            if (children != null && !children.isEmpty()) {
                 children.forEach(child -> {
                     Class childClass = child.getClass();
                     Command childCommandAnnotation = (Command) childClass.getAnnotation(Command.class);
