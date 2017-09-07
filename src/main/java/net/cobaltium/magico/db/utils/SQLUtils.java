@@ -12,23 +12,25 @@ public class SQLUtils {
                 con.close();
             }
         } catch (SQLException ex) {
+            ex.toString();
 
         }
     }
 
     public static String getDatabaseType(Type t) {
-        switch (t.getTypeName()) {
-            case "String":
+        switch (t.getTypeName().toLowerCase()) {
+            case "string":
                 return "varchar";
             case "int":
             case "integer":
-            case "Integer":
                 return "int";
-            case "Double":
+            case "long":
+                return "bigint";
+            case "double":
                 return "double";
-            case "Boolean":
+            case "boolean":
                 return "boolean";
-            case "UUID":
+            case "uuid":
                 return "UUID";
             default:
                 return "varchar";
