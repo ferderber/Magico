@@ -12,8 +12,6 @@ public class SQLUtils {
                 con.close();
             }
         } catch (SQLException ex) {
-            ex.toString();
-
         }
     }
 
