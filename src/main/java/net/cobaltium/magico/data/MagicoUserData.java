@@ -1,7 +1,6 @@
 package net.cobaltium.magico.data;
 
 import net.cobaltium.magico.MagicoKeys;
-import net.cobaltium.magico.spells.SpellType;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataHolder;
@@ -20,7 +19,7 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
     private int manaRestoreMultiplier;
 
     protected MagicoUserData() {
-        this(100, SpellType.FIREBALL.getSpellId(), false, 1);
+        this(100, -1, false, 1);
     }
 
     protected MagicoUserData(int mana, int spellId, boolean scoreboardClosing, int manaRestoreMultiplier) {
