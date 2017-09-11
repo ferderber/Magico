@@ -6,10 +6,6 @@ import net.cobaltium.magico.data.MagicoProjectileData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.event.cause.entity.spawn.SpawnCause;
-import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.world.World;
 
@@ -31,8 +27,6 @@ public abstract class ProjectileSpell implements Spell {
         data.setBlockDamage(false);
         entity.offer(data);
         entity.setVelocity(direction.mul(2));
-        SpawnCause spawnCause = SpawnCause.builder().type(SpawnTypes.PLUGIN).build();
-        NamedCause cause = NamedCause.of(NamedCause.OWNER, player);
-        world.spawnEntity(entity, Cause.source(spawnCause).named(cause).build());
+        world.spawnEntity(entity);
     }
 }

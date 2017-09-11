@@ -5,7 +5,6 @@ import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.Direction;
@@ -44,7 +43,7 @@ public class IceWall implements Spell {
             for (int i = 0; i < wall.length; i++) {
                 for (int j = 0; j < wall[i].length; j++) {
                     if (wall[i][j] != null) {
-                        wall[i][j].setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlag.NONE, Cause.source(plugin).build());
+                        wall[i][j].setBlockType(BlockTypes.PACKED_ICE);
                     }
                 }
             }
