@@ -1,12 +1,15 @@
 package net.cobaltium.magico.commands.user;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.field.types.UuidType;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import net.cobaltium.magico.commands.utils.BaseCommandExecutor;
 import net.cobaltium.magico.commands.utils.Command;
 import net.cobaltium.magico.commands.utils.ParentCommand;
 import net.cobaltium.magico.db.Database;
-import net.cobaltium.magico.db.DatabaseAccessObject;
 import net.cobaltium.magico.db.tables.UserSpells;
-import net.cobaltium.magico.db.utils.SQLUtils;
 import net.cobaltium.magico.spells.SpellType;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -17,7 +20,6 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -40,20 +42,19 @@ public class UserGiveSpellCommand extends BaseCommandExecutor {
             Optional<SpellType> spellType_ = SpellType.getByName(spell);
             if (spellType_.isPresent()) {
                 SpellType spellType = spellType_.get();
-                Database db = new Database();
-                Connection con = null;
+                ConnectionSource con = null;
                 try {
-                    con = db.getConnection();
-                    DatabaseAccessObject<UserSpells> userDao = new DatabaseAccessObject<>(con, UserSpells.class);
-                    userDao.createTable();
+                    con = Database.getConnection();
+                    Dao<UserSpells, UuidType> userDao = DaoManager.createDao(con, UserSpells.class);
+                    if (!userDao.isTableExists()) {
+                        TableUtils.createTable(userDao);
+                    }
                     UserSpells userSpell = new UserSpells(player.getUniqueId(), spellType.getSpellId(), 1);
-                    userDao.insert(userSpell);
+                    userDao.create(userSpell);
                 } catch (SQLException ex) {
                     player.sendMessage(Text.of("Error adding spell"));
-                } catch (IllegalAccessException ex) {
-
                 } finally {
-                    SQLUtils.closeQuietly(con);
+                    con.closeQuietly();
                 }
                 src.sendMessage(Text.of("" + spellType.getSpellName()));
                 return CommandResult.success();

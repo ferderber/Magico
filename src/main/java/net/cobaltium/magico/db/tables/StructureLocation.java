@@ -1,18 +1,21 @@
 package net.cobaltium.magico.db.tables;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
+@DatabaseTable(tableName = "structures")
 public class StructureLocation {
 
-    @DataColumn(primaryKey = true, autoIncrement = true)
+    @DatabaseField(id = true)
     private long id;
-    @DataColumn
+    @DatabaseField
     private int type;
-    @DataColumn
+    @DatabaseField
     private int x;
-    @DataColumn
+    @DatabaseField
     private int y;
-    @DataColumn
+    @DatabaseField
     private int z;
 
     public StructureLocation() {

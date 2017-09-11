@@ -1,5 +1,9 @@
 package net.cobaltium.magico;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import net.cobaltium.magico.commands.user.UserCommand;
 import net.cobaltium.magico.commands.user.UserGiveSpellCommand;
 import net.cobaltium.magico.commands.user.UserSetManaCommand;
@@ -11,9 +15,8 @@ import net.cobaltium.magico.data.MagicoProjectileData;
 import net.cobaltium.magico.data.MagicoUserBuilder;
 import net.cobaltium.magico.data.MagicoUserData;
 import net.cobaltium.magico.db.Database;
-import net.cobaltium.magico.db.DatabaseAccessObject;
 import net.cobaltium.magico.db.tables.StructureLocation;
-import net.cobaltium.magico.db.utils.SQLUtils;
+import net.cobaltium.magico.db.tables.UserSpells;
 import net.cobaltium.magico.listeners.MagicoListener;
 import net.cobaltium.magico.spells.SpellType;
 import net.cobaltium.magico.tasks.ManaRestoreTask;
@@ -29,7 +32,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.scheduler.Task;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -67,23 +69,19 @@ public class Magico {
                 .buildAndRegister(plugin);
 
 
-        Database db = new Database();
         StructureLocation location = new StructureLocation(0, 0, 64, 0);
-        Connection con = null;
+        ConnectionSource con = null;
         List<StructureLocation> structures = null;
         try {
-            con = db.getConnection();
-            DatabaseAccessObject<StructureLocation> locationDao = new DatabaseAccessObject<>(con, StructureLocation.class);
-            locationDao.createTable();
-            structures = locationDao.getAll();
+            con = Database.getConnection();
+            TableUtils.createTableIfNotExists(con, UserSpells.class);
+            TableUtils.createTableIfNotExists(con, StructureLocation.class);
+            Dao<StructureLocation, Long> structureDao = DaoManager.createDao(con, StructureLocation.class);
+            structures = structureDao.queryForAll();
         } catch (SQLException ex) {
             logger.error("DB error", ex);
-        } catch (IllegalAccessException ex) {
-            logger.error("Unable to access properties in data object class", ex);
-        } catch (InstantiationException ex) {
-            logger.error("Data Objects must have a default no-arg constructor", ex);
         } finally {
-            SQLUtils.closeQuietly(con);
+            con.closeQuietly();
         }
         Task.builder()
                 .execute(new ManaRestoreTask(structures))

@@ -1,24 +1,27 @@
 package net.cobaltium.magico.db;
 
+import com.j256.ormlite.jdbc.DataSourceConnectionSource;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.service.sql.SqlService;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
+public final class Database {
 
-public class Database {
+    private static SqlService sql;
 
-    private SqlService sql;
+    private Database() {
 
-    private javax.sql.DataSource getDataSource(String jdbcUrl) throws SQLException {
+    }
+
+    private static javax.sql.DataSource getDataSource() throws SQLException {
         if (sql == null) {
             sql = Sponge.getServiceManager().provide(SqlService.class).get();
         }
-        return sql.getDataSource(jdbcUrl);
+        return sql.getDataSource("jdbc:h2:./magico");
     }
 
-    public Connection getConnection() throws SQLException {
-        return getDataSource("jdbc:h2:./magico.db").getConnection();
+    public static DataSourceConnectionSource getConnection() throws SQLException {
+        return new DataSourceConnectionSource(getDataSource(), "jdbc:h2:./magico");
     }
 }

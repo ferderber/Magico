@@ -1,16 +1,22 @@
 package net.cobaltium.magico.db.tables;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+import net.cobaltium.magico.spells.SpellType;
+
+import java.util.Optional;
 import java.util.UUID;
 
+@DatabaseTable(tableName = "userspells")
 public class UserSpells {
 
-    @DataColumn()
+    @DatabaseField(uniqueCombo = true)
     private UUID user_id;
 
-    @DataColumn
+    @DatabaseField(uniqueCombo = true)
     private int spell_id;
 
-    @DataColumn
+    @DatabaseField
     private int level;
 
     public UserSpells() {
@@ -21,5 +27,9 @@ public class UserSpells {
         this.user_id = user_id;
         this.spell_id = spell_id;
         this.level = level;
+    }
+
+    public Optional<SpellType> getSpellType() {
+        return SpellType.getById(spell_id);
     }
 }
