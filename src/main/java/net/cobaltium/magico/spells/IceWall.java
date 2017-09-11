@@ -36,7 +36,6 @@ public class IceWall implements Spell {
         if (hit_.isPresent()) {
             BlockRayHit<World> hit = hit_.get();
             Location<World> location = hit.getLocation();
-            hit.getFaces()[0].getOpposite();
             Vector3d perpLookVector = hit.getDirection().cross(0, 1, 0); //get wall direction vector
             Vector3i wallVector = Direction.getClosest(perpLookVector, Direction.Division.CARDINAL).asBlockOffset();
             Location<World>[][] wall = getWall(location, wallVector);
@@ -62,7 +61,7 @@ public class IceWall implements Spell {
         return MANA_COST;
     }
 
-    public Location<World>[][] getWall(Location<World> center, Vector3i vec) {
+    private Location<World>[][] getWall(Location<World> center, Vector3i vec) {
         Location<World>[][] wall = new Location[wallSize][wallSize];
         int middle = wallSize / 2;
         if (wallSize % 2 == 0) {
@@ -96,12 +95,13 @@ public class IceWall implements Spell {
     }
 
 
-    public Queue<BlockSnapshot> getWallSnapshot(Location<World>[][] wall) {
-        Queue<BlockSnapshot> wallSnapshot = new LinkedList();
+    private Queue<BlockSnapshot> getWallSnapshot(Location<World>[][] wall) {
+        Queue<BlockSnapshot> wallSnapshot = new LinkedList<>();
         for (int i = 0; i < wall.length; i++) {
             for (int j = 0; j < wall[i].length; j++) {
-                if (wall[i][j] != null)
+                if (wall[i][j] != null) {
                     wallSnapshot.add(wall[i][j].createSnapshot());
+                }
             }
         }
         return wallSnapshot;
