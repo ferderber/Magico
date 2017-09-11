@@ -1,7 +1,12 @@
 package net.cobaltium.magico.listeners;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.DataSourceConnectionSource;
 import net.cobaltium.magico.data.MagicoUserData;
+import net.cobaltium.magico.db.Database;
 import net.cobaltium.magico.db.tables.StructureLocation;
+import net.cobaltium.magico.db.tables.UserSpells;
 import net.cobaltium.magico.spells.SpellType;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -19,8 +24,11 @@ import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class MagicoListener {
@@ -43,33 +51,54 @@ public class MagicoListener {
                 MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
 
                 if (player.get(Keys.IS_SNEAKING).isPresent() && player.get(Keys.IS_SNEAKING).get()) {
-                    SpellType spellType = getNextSpellType(userData.getCurrentSpellId());
-                    userData.setCurrentSpellId(spellType.getSpellId());
-                    player.offer(userData);
-                    player.sendMessage(Text.builder()
-                            .append(Text.of("Current spell changed to "))
-                            .append(Text.of(spellType.getSpellName())).color(TextColors.AQUA).build());
-                    updateScoreboard(player, userData);
-                } else {
-                    Optional<SpellType> spellType_ = SpellType.getById(userData.getCurrentSpellId());
 
-                    SpellType spellType;
-                    if (spellType_.isPresent()) {
-                        spellType = spellType_.get();
-                    } else {
-                        spellType = SpellType.FIREBALL;
-                    }
-                    if (player.hasPermission(spellType.getPermission())) {
-                        if (userData.getMana() >= spellType.getSpell().getManaCost()) {
-                            spellType.getSpell().handle(plugin, player);
-                            userData.modifyMana(-spellType.getSpell().getManaCost());
+                    DataSourceConnectionSource con = null;
+                    try {
+                        con = Database.getConnection();
+                        Dao<UserSpells, UUID> userSpellsDao = DaoManager.createDao(con, UserSpells.class);
+                        List<UserSpells> userSpells = userSpellsDao.queryForEq("user_id", player.getUniqueId());
+                        List<SpellType> availableSpells = new ArrayList<>();
+                        if (userSpells.size() > 0) {
+                            userSpells.forEach(spell_ -> spell_.getSpellType().ifPresent(spellType -> availableSpells.add(spellType)));
+                            SpellType nextSpell = getNextSpellType(userData.getCurrentSpellId(), availableSpells);
+                            userData.setCurrentSpellId(nextSpell.getSpellId());
                             player.offer(userData);
+                            player.sendMessage(Text.builder()
+                                    .append(Text.of("Current spell changed to "))
+                                    .append(Text.of(nextSpell.getSpellName())).color(TextColors.AQUA).build());
                             updateScoreboard(player, userData);
                         } else {
-                            player.sendMessage(Text.of("Not enough mana"));
+                            player.sendMessage(Text.of("You don't have any spells"));
+                        }
+                    } catch (SQLException ex) {
+                    } finally {
+                        con.closeQuietly();
+                    }
+                } else {
+                    int spellId = userData.getCurrentSpellId();
+                    if (spellId >= 0) {
+                        Optional<SpellType> spellType_ = SpellType.getById(userData.getCurrentSpellId());
+
+                        SpellType spellType;
+                        if (spellType_.isPresent()) {
+                            spellType = spellType_.get();
+                        } else {
+                            spellType = SpellType.FIREBALL;
+                        }
+                        if (player.hasPermission(spellType.getPermission())) {
+                            if (userData.getMana() >= spellType.getSpell().getManaCost()) {
+                                spellType.getSpell().handle(plugin, player);
+                                userData.modifyMana(-spellType.getSpell().getManaCost());
+                                player.offer(userData);
+                                updateScoreboard(player, userData);
+                            } else {
+                                player.sendMessage(Text.of("Not enough mana"));
+                            }
+                        } else {
+                            player.sendMessage(Text.of("Permission required to use " + spellType.getSpellName()));
                         }
                     } else {
-                        player.sendMessage(Text.of("Permission required to use " + spellType.getSpellName()));
+                        player.sendMessage(Text.of("No spell selected"));
                     }
                 }
             }
@@ -117,17 +146,16 @@ public class MagicoListener {
         }
     }
 
-    public SpellType getNextSpellType(int spellId) {
-        SpellType[] spells = SpellType.values();
-        for (int i = 0; i < spells.length; i++) {
-            if (spells[i].getSpellId() == spellId) {
-                if (i < spells.length - 1) {
-                    return spells[i + 1];
+    public SpellType getNextSpellType(int spellId, List<SpellType> spellTypes) {
+        for (int i = 0; i < spellTypes.size(); i++) {
+            if (spellTypes.get(i).getSpellId() == spellId) {
+                if (i < spellTypes.size() - 1) {
+                    return spellTypes.get(i + 1);
                 } else {
-                    return spells[0];
+                    return spellTypes.get(0);
                 }
             }
         }
-        return spells[0];
+        return spellTypes.get(0);
     }
 }
