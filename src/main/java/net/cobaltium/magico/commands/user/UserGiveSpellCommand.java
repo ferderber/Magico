@@ -58,6 +58,16 @@ public class UserGiveSpellCommand extends BaseCommandExecutor {
                 }
                 src.sendMessage(Text.of("" + spellType.getSpellName()));
                 return CommandResult.success();
+            } else {
+                Text.Builder spellList = Text.builder()
+                        .append(Text.of("Unknown spell"))
+                        .append(Text.NEW_LINE)
+                        .append(Text.of("Available Spells: "));
+                SpellType[] spellTypes = SpellType.values();
+                for (int i = 0; i < spellTypes.length; i++) {
+                    spellList.append(Text.NEW_LINE).append(Text.of(spellTypes[i].getSpellKey()));
+                }
+                player.sendMessage(spellList.build());
             }
         }
         return CommandResult.empty();
