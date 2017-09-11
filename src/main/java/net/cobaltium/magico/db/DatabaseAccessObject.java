@@ -15,26 +15,33 @@ import java.util.List;
 public class DatabaseAccessObject<T> {
 
     private List<Tuple<Field, DataColumn>> fields;
-    private Field primaryField;
+    private List<Field> primaryFields;
     private String insertString;
+    private Field id;
     private Class<? extends T> tableClass;
     private Connection con;
 
     public DatabaseAccessObject(Connection con, Class<T> tableClass) {
         this.tableClass = tableClass;
         this.con = con;
+        primaryFields = new ArrayList<>();
         Field[] classFields = tableClass.getDeclaredFields();
-        List<Tuple<Field, DataColumn>> columns = new ArrayList<>();
+        List<Tuple<Field, DataColumn>> fields = new ArrayList<>();
         for (Field field : classFields) {
             DataColumn annotation = field.getDeclaredAnnotation(DataColumn.class);
             if (annotation != null) {
-                columns.add(Tuple.of(field, annotation));
-            }
-            if (annotation.primaryKey()) {
-                this.primaryField = field;
+                if (annotation.primaryKey()) {
+                    this.primaryFields.add(field);
+                }
+                if (annotation.id()) {
+                    this.id = field;
+                }
+                if (!annotation.primaryKey() && annotation.id()) {
+                    fields.add(Tuple.of(field, annotation));
+                }
             }
         }
-        this.fields = columns;
+        this.fields = fields;
         this.insertString = getInsertString();
     }
 
@@ -46,7 +53,7 @@ public class DatabaseAccessObject<T> {
             valuesBuilder.append(") VALUES (");
             for (int i = 0; i < fields.size(); i++) {
                 DataColumn dc = fields.get(i).getSecond();
-                if (!dc.primaryKey() || !dc.autoIncrement()) {
+                if ((!dc.primaryKey() && !dc.id()) || !dc.autoIncrement()) {
                     insertBuilder.append(fields.get(i).getFirst().getName());
                     if (i != fields.size() - 1) {
                         insertBuilder.append(", ");
@@ -103,7 +110,7 @@ public class DatabaseAccessObject<T> {
     public List<T> getAllById(String s) throws IllegalAccessException, SQLException, InstantiationException {
         List<T> objs = new ArrayList<>();
         Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("select * from " + tableClass.getSimpleName() + " where " + primaryField.getName() + " = " + s + ";");
+        ResultSet rs = stmt.executeQuery("select * from " + tableClass.getSimpleName() + " where " + id.getName() + " = " + s + ";");
         while (rs.next()) {
             objs.add(createObject(rs));
         }

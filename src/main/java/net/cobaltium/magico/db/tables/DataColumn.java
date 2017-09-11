@@ -8,4 +8,8 @@ public @interface DataColumn {
     boolean primaryKey() default false;
 
     boolean autoIncrement() default false;
+
+    boolean notNull() default false;
+
+    boolean id() default false;
 }
