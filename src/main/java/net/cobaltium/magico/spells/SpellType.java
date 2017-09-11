@@ -8,7 +8,8 @@ import java.util.Optional;
 public enum SpellType {
     FIREBALL(0, "Fireball", new Fireball(), new FireballListener(), "magico.spells.fireball"),
     ICE_WALL(1, "Ice Wall", new IceWall(), null, "magico.spells.icewall"),
-    TELEPORT(2, "Teleport", new Teleport(), null, "magico.spells.teleport");
+    TELEPORT(2, "Teleport", new Teleport(), null, "magico.spells.teleport"),
+    LEVITATE(3, "Levitate", new Levitate(), null, "magico.spells.levitate");
 
     private int spellId;
     private String spellName;
@@ -35,7 +36,7 @@ public enum SpellType {
 
     public static Optional<SpellType> getByName(String spellName) {
         for (SpellType spellType : values()) {
-            if (spellType.spellName.equalsIgnoreCase(spellName)) {
+            if (spellType.spellName.replace(" ", "").equalsIgnoreCase(spellName)) {
                 return Optional.of(spellType);
             }
         }
@@ -48,6 +49,10 @@ public enum SpellType {
 
     public String getSpellName() {
         return spellName;
+    }
+
+    public String getSpellKey() {
+        return spellName.replace(" ", "");
     }
 
     public Spell getSpell() {
