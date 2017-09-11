@@ -33,7 +33,6 @@ import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.scheduler.Task;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
