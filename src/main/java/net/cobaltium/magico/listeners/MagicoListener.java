@@ -34,11 +34,9 @@ import java.util.concurrent.TimeUnit;
 public class MagicoListener {
 
     private PluginContainer plugin;
-    private List<StructureLocation> structures;
 
-    public MagicoListener(PluginContainer plugin, List<StructureLocation> structures) {
+    public MagicoListener(PluginContainer plugin) {
         this.plugin = plugin;
-        this.structures = structures;
     }
 
     @Listener

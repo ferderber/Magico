@@ -71,25 +71,23 @@ public class Magico {
 
         StructureLocation location = new StructureLocation(0, 0, 64, 0);
         ConnectionSource con = null;
-        List<StructureLocation> structures = null;
         try {
             con = Database.getConnection();
             TableUtils.createTableIfNotExists(con, UserSpells.class);
             TableUtils.createTableIfNotExists(con, StructureLocation.class);
             Dao<StructureLocation, Long> structureDao = DaoManager.createDao(con, StructureLocation.class);
-            structures = structureDao.queryForAll();
         } catch (SQLException ex) {
             logger.error("DB error", ex);
         } finally {
             con.closeQuietly();
         }
         Task.builder()
-                .execute(new ManaRestoreTask(structures))
+                .execute(new ManaRestoreTask())
                 .interval(5, TimeUnit.SECONDS)
                 .submit(plugin);
 
         //Listeners
-        this.game.getEventManager().registerListeners(this, new MagicoListener(this.plugin, structures));
+        this.game.getEventManager().registerListeners(this, new MagicoListener(this.plugin));
         SpellType[] spellTypes = SpellType.values();
         for (SpellType spellType : spellTypes) {
             if (spellType.getListener() != null) {
