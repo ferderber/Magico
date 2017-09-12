@@ -1,24 +1,28 @@
 package net.cobaltium.magico.spells;
 
-import com.flowpowered.math.vector.Vector3d;
+import net.cobaltium.magico.tasks.LevitateTask;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.entity.GravityData;
-import org.spongepowered.api.data.manipulator.mutable.entity.VelocityData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.Task;
 
-public class Levitate implements Spell {
+import java.util.concurrent.TimeUnit;
 
-    @Override public void handle(PluginContainer plugin, Player player) {
-        GravityData data = player.getOrCreate(GravityData.class).get();
-        data.set(Keys.HAS_GRAVITY, !data.gravity().get());
-        VelocityData velocityData = player.getOrCreate(VelocityData.class).get();
-        velocityData.set(Keys.VELOCITY, new Vector3d(0, .2, 0));
-        player.offer(data);
-        player.offer(velocityData);
+public class Levitate extends ToggleableSpell {
+
+    public void toggleOn(PluginContainer plugin, Player player) {
+        player.offer(Keys.HAS_GRAVITY, false);
+        player.offer(Keys.CAN_FLY, true);
+        Task.builder().interval(200, TimeUnit.MILLISECONDS).execute(new LevitateTask(player.getUniqueId())).submit(plugin);
     }
 
-    @Override public int getManaCost() {
+    public void toggleOff(PluginContainer plugin, Player player) {
+        player.offer(Keys.HAS_GRAVITY, true);
+        player.offer(Keys.CAN_FLY, false);
+    }
+
+    @Override
+    public int getManaCost() {
         return 5;
     }
 }

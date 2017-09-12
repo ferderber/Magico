@@ -5,7 +5,6 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.DataSourceConnectionSource;
 import net.cobaltium.magico.data.MagicoUserData;
 import net.cobaltium.magico.db.Database;
-import net.cobaltium.magico.db.tables.StructureLocation;
 import net.cobaltium.magico.db.tables.UserSpells;
 import net.cobaltium.magico.spells.SpellType;
 import org.spongepowered.api.data.key.Keys;
@@ -85,10 +84,10 @@ public class MagicoListener {
                         }
                         if (player.hasPermission(spellType.getPermission())) {
                             if (userData.getMana() >= spellType.getSpell().getManaCost()) {
-                                spellType.getSpell().handle(plugin, player);
                                 userData.modifyMana(-spellType.getSpell().getManaCost());
                                 player.offer(userData);
                                 updateScoreboard(player, userData);
+                                spellType.getSpell().handle(plugin, player);
                             } else {
                                 player.sendMessage(Text.of("Not enough mana"));
                             }

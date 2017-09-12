@@ -17,16 +17,18 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
     private int currentSpellId;
     private boolean scoreboardClosing;
     private int manaRestoreMultiplier;
+    private boolean isCastingSpell;
 
     protected MagicoUserData() {
-        this(100, -1, false, 1);
+        this(100, -1, false, false, 1);
     }
 
-    protected MagicoUserData(int mana, int spellId, boolean scoreboardClosing, int manaRestoreMultiplier) {
+    protected MagicoUserData(int mana, int spellId, boolean scoreboardClosing, boolean isCastingSpell, int manaRestoreMultiplier) {
         this.mana = mana;
         this.currentSpellId = spellId;
         this.scoreboardClosing = scoreboardClosing;
         this.manaRestoreMultiplier = manaRestoreMultiplier;
+        this.isCastingSpell = isCastingSpell;
         registerGettersAndSetters();
     }
 
@@ -47,6 +49,10 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         registerFieldGetter(MagicoKeys.MANA_RESTORE_MULTIPLIER, this::getManaRestoreMultiplier);
         registerFieldSetter(MagicoKeys.MANA_RESTORE_MULTIPLIER, this::setManaRestoreMultiplier);
         registerKeyValue(MagicoKeys.MANA_RESTORE_MULTIPLIER, this::manaRestoreMultiplier);
+
+        registerFieldGetter(MagicoKeys.IS_CASTING_SPELL, this::isCastingSpell);
+        registerFieldSetter(MagicoKeys.IS_CASTING_SPELL, this::setCastingSpell);
+        registerKeyValue(MagicoKeys.IS_CASTING_SPELL, this::castingSpell);
     }
 
     public Value<Integer> mana() {
@@ -65,6 +71,10 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing);
     }
 
+    public Value<Boolean> castingSpell() {
+        return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.IS_CASTING_SPELL, isCastingSpell);
+    }
+
     public int getMana() {
         return mana;
     }
@@ -79,6 +89,14 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
 
     public int getManaRestoreMultiplier() {
         return manaRestoreMultiplier;
+    }
+
+    public boolean isCastingSpell() {
+        return isCastingSpell;
+    }
+
+    public void setCastingSpell(boolean isCastingSpell) {
+        this.isCastingSpell = isCastingSpell;
     }
 
     public void setMana(int mana) {
@@ -120,6 +138,9 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         if (dataView.contains(MagicoKeys.SCOREBOARD_CLOSING.getQuery())) {
             this.scoreboardClosing = dataView.getBoolean(MagicoKeys.SCOREBOARD_CLOSING.getQuery()).get();
         }
+        if (dataView.contains(MagicoKeys.IS_CASTING_SPELL.getQuery())) {
+            this.isCastingSpell = dataView.getBoolean(MagicoKeys.IS_CASTING_SPELL.getQuery()).get();
+        }
         return Optional.of(this);
     }
 
@@ -133,6 +154,7 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
             this.currentSpellId = mergedData.currentSpellId;
             this.scoreboardClosing = mergedData.scoreboardClosing;
             this.manaRestoreMultiplier = mergedData.manaRestoreMultiplier;
+            this.isCastingSpell = mergedData.isCastingSpell;
         }
         return Optional.of(this);
     }
@@ -140,12 +162,12 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
 
     @Override
     public MagicoUserData copy() {
-        return new MagicoUserData(mana, currentSpellId, scoreboardClosing, manaRestoreMultiplier);
+        return new MagicoUserData(mana, currentSpellId, scoreboardClosing, isCastingSpell, manaRestoreMultiplier);
     }
 
     @Override
     public ImmutableMagicoUserData asImmutable() {
-        return new ImmutableMagicoUserData(mana, currentSpellId, scoreboardClosing, manaRestoreMultiplier);
+        return new ImmutableMagicoUserData(mana, currentSpellId, scoreboardClosing, isCastingSpell, manaRestoreMultiplier);
     }
 
     @Override
@@ -154,7 +176,8 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
                 .set(MagicoKeys.CURRENT_SPELL, currentSpellId)
                 .set(MagicoKeys.PLAYER_MANA, mana)
                 .set(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing)
-                .set(MagicoKeys.MANA_RESTORE_MULTIPLIER, manaRestoreMultiplier);
+                .set(MagicoKeys.MANA_RESTORE_MULTIPLIER, manaRestoreMultiplier)
+                .set(MagicoKeys.IS_CASTING_SPELL, isCastingSpell);
     }
 
     @Override

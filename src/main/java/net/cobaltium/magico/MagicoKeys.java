@@ -36,6 +36,12 @@ public class MagicoKeys {
             DataQuery.of("magico", "blockDamage"),
             "magico:block_damage",
             "Block Damage");
+    public static Key<Value<Boolean>> IS_CASTING_SPELL = KeyFactory.makeSingleKey(TypeTokens.BOOLEAN_TOKEN,
+            new TypeToken<Value<Boolean>>() {
+            },
+            DataQuery.of("magico", "isCastingSpell"),
+            "magico:is_casting_spell",
+            "Casting Spell");
     public static Key<Value<Boolean>> SCOREBOARD_CLOSING = KeyFactory.makeSingleKey(TypeTokens.BOOLEAN_TOKEN,
             new TypeToken<Value<Boolean>>() {
             },
