@@ -14,7 +14,7 @@ public class MagicoUserBuilder extends AbstractDataBuilder<MagicoUserData>
         implements DataManipulatorBuilder<MagicoUserData, ImmutableMagicoUserData> {
 
     public MagicoUserBuilder() {
-        super(MagicoUserData.class, 1);
+        super(MagicoUserData.class, 0);
     }
 
     @Override
