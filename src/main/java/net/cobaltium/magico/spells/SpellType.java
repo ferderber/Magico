@@ -9,7 +9,8 @@ public enum SpellType {
     FIREBALL(0, "Fireball", new Fireball(), new FireballListener(), "magico.spells.fireball"),
     ICE_WALL(1, "Ice Wall", new IceWall(), null, "magico.spells.icewall"),
     TELEPORT(2, "Teleport", new Teleport(), null, "magico.spells.teleport"),
-    LEVITATE(3, "Levitate", new Levitate(), null, "magico.spells.levitate");
+    LEVITATE(3, "Levitate", new Levitate(), null, "magico.spells.levitate"),
+    TRANSMUTATION(4, "Transmutation", new Transmutation(), null, "magico.spells.transmutation");
 
     private int spellId;
     private String spellName;
