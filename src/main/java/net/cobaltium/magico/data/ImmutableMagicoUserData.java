@@ -11,13 +11,15 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
     private int manaRestoreMultiplier;
     private int currentSpellId;
     private boolean scoreboardClosing;
+    private boolean displayMana;
     private boolean isCastingSpell;
 
 
-    protected ImmutableMagicoUserData(int mana, int spellId, boolean scoreboardClosing, boolean isCastingSpell, int manaRestoreMultiplier) {
+    protected ImmutableMagicoUserData(int mana, int spellId, boolean scoreboardClosing, boolean displayMana, boolean isCastingSpell, int manaRestoreMultiplier) {
         this.mana = mana;
         this.currentSpellId = spellId;
         this.scoreboardClosing = scoreboardClosing;
+        this.displayMana = displayMana;
         this.manaRestoreMultiplier = manaRestoreMultiplier;
         this.isCastingSpell = isCastingSpell;
         registerGetters();
@@ -33,6 +35,9 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
 
         registerFieldGetter(MagicoKeys.SCOREBOARD_CLOSING, () -> this.scoreboardClosing);
         registerKeyValue(MagicoKeys.SCOREBOARD_CLOSING, this::scoreboardClosing);
+
+        registerFieldGetter(MagicoKeys.DISPLAY_MANA, () -> this.displayMana);
+        registerKeyValue(MagicoKeys.DISPLAY_MANA, this::displayMana);
 
         registerFieldGetter(MagicoKeys.MANA_RESTORE_MULTIPLIER, () -> this.manaRestoreMultiplier);
         registerKeyValue(MagicoKeys.MANA_RESTORE_MULTIPLIER, this::manaRestoreMultiplier);
@@ -57,13 +62,17 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing).asImmutable();
     }
 
+    private ImmutableValue<Boolean> displayMana() {
+        return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.DISPLAY_MANA, displayMana).asImmutable();
+    }
+
     private ImmutableValue<Boolean> castingSpell() {
         return Sponge.getRegistry().getValueFactory().createValue(MagicoKeys.IS_CASTING_SPELL, isCastingSpell).asImmutable();
     }
 
     @Override
     public MagicoUserData asMutable() {
-        return new MagicoUserData(mana, currentSpellId, scoreboardClosing, isCastingSpell, manaRestoreMultiplier);
+        return new MagicoUserData(mana, currentSpellId, scoreboardClosing, displayMana, isCastingSpell, manaRestoreMultiplier);
     }
 
     @Override

@@ -13,7 +13,10 @@ import org.spongepowered.api.scheduler.Task;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
+
+import static net.cobaltium.magico.utils.ScoreboardUtils.SetScoreboardMinimal;
 
 public class ManaRestoreTask implements Consumer<Task> {
 
@@ -41,6 +44,11 @@ public class ManaRestoreTask implements Consumer<Task> {
                         }
                         break;
                     }
+                }
+                //update scoreboard
+                MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
+                if (!userData.getScoreboardClosing() && userData.getDisplayMana()) {
+                    SetScoreboardMinimal(player, Optional.empty());
                 }
             });
 

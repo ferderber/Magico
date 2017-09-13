@@ -7,6 +7,8 @@ import net.cobaltium.magico.data.MagicoUserData;
 import net.cobaltium.magico.db.Database;
 import net.cobaltium.magico.db.tables.UserSpells;
 import net.cobaltium.magico.spells.SpellType;
+import static net.cobaltium.magico.utils.ScoreboardUtils.SetScoreboardList;
+import static net.cobaltium.magico.utils.ScoreboardUtils.SetScoreboardNormal;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -14,12 +16,6 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.item.inventory.InteractItemEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.scoreboard.Score;
-import org.spongepowered.api.scoreboard.Scoreboard;
-import org.spongepowered.api.scoreboard.critieria.Criteria;
-import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
-import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -28,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class MagicoListener {
 
@@ -63,7 +58,7 @@ public class MagicoListener {
                             player.sendMessage(Text.builder()
                                     .append(Text.of("Current spell changed to "))
                                     .append(Text.of(nextSpell.getSpellName())).color(TextColors.AQUA).build());
-                            updateScoreboard(player, userData);
+                            SetScoreboardList(player, availableSpells, Optional.ofNullable(plugin));
                         } else {
                             player.sendMessage(Text.of("You don't have any spells"));
                         }
@@ -86,7 +81,7 @@ public class MagicoListener {
                             if (userData.getMana() >= spellType.getSpell().getManaCost()) {
                                 userData.modifyMana(-spellType.getSpell().getManaCost());
                                 player.offer(userData);
-                                updateScoreboard(player, userData);
+                                SetScoreboardNormal(player, Optional.ofNullable(plugin));
                                 spellType.getSpell().handle(plugin, player);
                             } else {
                                 player.sendMessage(Text.of("Not enough mana"));
@@ -98,47 +93,6 @@ public class MagicoListener {
                         player.sendMessage(Text.of("No spell selected"));
                     }
                 }
-            }
-        }
-    }
-
-    public void updateScoreboard(Player player, MagicoUserData userData) {
-        Scoreboard scoreboard = Scoreboard.builder().build();
-        Objective obj = Objective.builder()
-                .name("MagicoScoreboard")
-                .criterion(Criteria.DUMMY)
-                .name("Stats")
-                .build();
-        //Mana score text
-        Score manaScore = obj.getOrCreateScore(Text.of("Mana:"));
-        manaScore.setScore(userData.getMana());
-        Optional<SpellType> spellType_ = SpellType.getById(userData.getCurrentSpellId());
-        if (spellType_.isPresent()) {
-            SpellType spellType = spellType_.get();
-            //Current spell score text
-            Score spellScore = obj.getOrCreateScore(Text.builder()
-                    .append(Text.of("Spell: "))
-                    .append(Text.builder()
-                            .append(Text.of(spellType.getSpellName()))
-                            .color(TextColors.BLUE).build())
-                    .append(Text.of(", Cost:"))
-                    .build());
-            spellScore.setScore(spellType.getSpell().getManaCost());
-
-            scoreboard.addObjective(obj);
-            scoreboard.updateDisplaySlot(obj, DisplaySlots.SIDEBAR);
-            player.setScoreboard(scoreboard);
-
-            //remove scoreboard after 5 seconds
-            if (!userData.getScoreboardClosing()) {
-                userData.setScoreboardClosing(true);
-                player.offer(userData);
-                Task.builder().delay(5, TimeUnit.SECONDS).execute(() -> {
-                    MagicoUserData user = player.getOrCreate(MagicoUserData.class).get();
-                    player.setScoreboard(Scoreboard.builder().build());
-                    user.setScoreboardClosing(false);
-                    player.offer(user);
-                }).submit(plugin);
             }
         }
     }

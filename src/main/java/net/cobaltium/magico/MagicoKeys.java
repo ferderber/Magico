@@ -48,4 +48,10 @@ public class MagicoKeys {
             DataQuery.of("magico", "scoreboardClosing"),
             "magico:scoreboard_closing",
             "Scoreboard Closing");
+    public static Key<Value<Boolean>> DISPLAY_MANA = KeyFactory.makeSingleKey(TypeTokens.BOOLEAN_TOKEN,
+            new TypeToken<Value<Boolean>>() {
+            },
+            DataQuery.of("magico", "displayMana"),
+            "magico:display_mana",
+            "Display Mana");
 }
