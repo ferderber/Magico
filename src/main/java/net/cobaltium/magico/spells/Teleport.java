@@ -9,12 +9,13 @@ import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import org.spongepowered.api.event.cause.EventContext;
 import java.util.Optional;
 
 public class Teleport implements Spell {
 
     @Override
-    public void handle(PluginContainer plugin, Player player) {
+    public void handle(EventContext e, PluginContainer plugin, Player player) {
         BlockRay<World> ray = BlockRay.from(player)
                 .stopFilter(BlockRay.continueAfterFilter(BlockRay.onlyAirFilter(), 1))
                 .distanceLimit(100).build();

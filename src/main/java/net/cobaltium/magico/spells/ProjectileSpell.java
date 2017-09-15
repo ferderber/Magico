@@ -7,6 +7,7 @@ import net.cobaltium.magico.tasks.ProjectileTask;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.world.World;
@@ -20,7 +21,8 @@ public abstract class ProjectileSpell implements Spell {
         this.entityType = type;
     }
 
-    public void handle(PluginContainer plugin, Player player) {
+    @Override
+    public void handle(EventContext e, PluginContainer plugin, Player player) {
         World world = player.getWorld();
         Vector3d rotation = player.getHeadRotation();
         final Vector3d direction = Quaterniond.fromAxesAnglesDeg(rotation.getX(), -rotation.getY(), rotation.getZ()).getDirection();

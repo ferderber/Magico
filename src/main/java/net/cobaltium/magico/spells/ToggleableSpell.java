@@ -3,12 +3,13 @@ package net.cobaltium.magico.spells;
 import net.cobaltium.magico.data.MagicoUserData;
 import org.spongepowered.api.data.DataTransactionResult;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.plugin.PluginContainer;
 
 public abstract class ToggleableSpell implements Spell {
 
     @Override
-    public void handle(PluginContainer plugin, Player player) {
+    public void handle(EventContext e, PluginContainer plugin, Player player) {
         MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
         if (userData.isCastingSpell()) {
             userData.setCastingSpell(false);

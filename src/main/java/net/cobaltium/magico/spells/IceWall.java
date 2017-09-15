@@ -5,6 +5,7 @@ import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.Direction;
@@ -29,7 +30,8 @@ public class IceWall implements Spell {
         wallSize = 3;
     }
 
-    public void handle(PluginContainer plugin, Player player) {
+    @Override
+    public void handle(EventContext e, PluginContainer plugin, Player player) {
         BlockRay<World> blockRay = BlockRay.from(player).stopFilter(BlockRay.onlyAirFilter()).distanceLimit(3).build();
         Optional<BlockRayHit<World>> hit_ = blockRay.end();
         if (hit_.isPresent()) {

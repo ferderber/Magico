@@ -1,6 +1,7 @@
 package net.cobaltium.magico.spells;
 
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 
@@ -16,11 +17,11 @@ public abstract class TimedSpell extends ToggleableSpell {
     }
 
     @Override
-    public void handle(PluginContainer plugin, Player player) {
-        super.handle(plugin, player);
+    public void handle(EventContext e, PluginContainer plugin, Player player) {
+        super.handle(e, plugin, player);
         Task.builder()
                 .delay(time, timeUnit)
-                .execute(() -> super.handle(plugin, player))
+                .execute(() -> super.handle(e, plugin, player))
                 .name("Timed Spell")
                 .submit(plugin);
     }
