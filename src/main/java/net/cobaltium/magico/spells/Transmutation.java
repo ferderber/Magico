@@ -1,6 +1,7 @@
 package net.cobaltium.magico.spells;
 
 import net.cobaltium.magico.data.MagicoUserData;
+import net.cobaltium.magico.utils.ScoreboardUtils;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.tileentity.carrier.TileEntityCarrier;
@@ -14,6 +15,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.type.TileEntityInventory;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
@@ -39,10 +42,22 @@ public class Transmutation implements Spell {
 
     private void transmuteRecipe(BlockSnapshot block, Player player) {
         if (block.getState().getType() == BlockTypes.BLACK_SHULKER_BOX) {
-            TileEntityCarrier box =  (TileEntityCarrier) block.getLocation().get().getTileEntity().get();
+            TileEntityCarrier box = (TileEntityCarrier) block.getLocation().get().getTileEntity().get();
             TileEntityInventory<TileEntityCarrier> inventory = box.getInventory();
-            if(inventory.contains(ItemTypes.APPLE)) {
-                inventory.query(ItemTypes.APPLE).slots().forEach((inv) -> player.sendMessage(Text.of(inv.poll().get().getQuantity())));
+            MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
+            int mana = userData.getMana();
+            if (inventory.contains(ItemTypes.APPLE)) {
+                for (Inventory inv : inventory.query(ItemTypes.APPLE).slots()) {
+                    int quantity = inv.peek().get().getQuantity();
+                    if (mana >= quantity * 10) {
+                        inv.poll();
+                        inv.set(ItemStack.builder().itemType(ItemTypes.IRON_INGOT).quantity(quantity).build());
+                        mana -= quantity * 10;
+                    }
+                }
+                userData.setMana(mana);
+                player.offer(userData);
+                ScoreboardUtils.SetScoreboardMinimal(player, Optional.empty());
             }
         }
     }
