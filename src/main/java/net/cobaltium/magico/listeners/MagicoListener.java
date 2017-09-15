@@ -8,32 +8,14 @@ import net.cobaltium.magico.db.Database;
 import net.cobaltium.magico.db.tables.UserSpells;
 import net.cobaltium.magico.spells.SpellType;
 
-import static net.cobaltium.magico.utils.ScoreboardUtils.SetScoreboardList;
-import static net.cobaltium.magico.utils.ScoreboardUtils.SetScoreboardNormal;
-
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.block.tileentity.TileEntity;
-import org.spongepowered.api.block.tileentity.TileEntityTypes;
-import org.spongepowered.api.block.tileentity.carrier.ShulkerBox;
-import org.spongepowered.api.block.tileentity.carrier.TileEntityCarrier;
+import net.cobaltium.magico.utils.ScoreboardUtils;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.ImmutableDataManipulator;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.action.InteractEvent;
-import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
-import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.item.inventory.InteractItemEvent;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.Container;
-import org.spongepowered.api.item.inventory.crafting.CraftingGridInventory;
-import org.spongepowered.api.item.inventory.crafting.CraftingInventory;
-import org.spongepowered.api.item.inventory.type.TileEntityInventory;
-import org.spongepowered.api.item.recipe.crafting.CraftingRecipe;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -85,7 +67,7 @@ public class MagicoListener {
                 player.sendMessage(Text.builder()
                         .append(Text.of("Current spell changed to "))
                         .append(Text.of(nextSpell.getSpellName())).color(TextColors.AQUA).build());
-                SetScoreboardList(player, availableSpells, Optional.ofNullable(plugin));
+                ScoreboardUtils.SetScoreboardList(player, availableSpells, Optional.ofNullable(plugin));
             } else {
                 player.sendMessage(Text.of("You don't have any spells"));
             }
@@ -112,7 +94,7 @@ public class MagicoListener {
                 if (userData.getMana() >= spellType.getSpell().getManaCost()) {
                     userData.modifyMana(-spellType.getSpell().getManaCost());
                     player.offer(userData);
-                    SetScoreboardNormal(player, Optional.ofNullable(plugin));
+                    ScoreboardUtils.SetScoreboardNormal(player, Optional.ofNullable(plugin));
                     spellType.getSpell().handle(e, plugin, player);
                 } else {
                     player.sendMessage(Text.of("Not enough mana"));

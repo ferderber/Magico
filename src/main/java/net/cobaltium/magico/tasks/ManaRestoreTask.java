@@ -6,6 +6,7 @@ import com.j256.ormlite.jdbc.DataSourceConnectionSource;
 import net.cobaltium.magico.data.MagicoUserData;
 import net.cobaltium.magico.db.Database;
 import net.cobaltium.magico.db.tables.StructureLocation;
+import net.cobaltium.magico.utils.ScoreboardUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
@@ -15,8 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-
-import static net.cobaltium.magico.utils.ScoreboardUtils.SetScoreboardMinimal;
 
 public class ManaRestoreTask implements Consumer<Task> {
 
@@ -48,7 +47,7 @@ public class ManaRestoreTask implements Consumer<Task> {
                 //update scoreboard
                 MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
                 if (!userData.getScoreboardClosing() && userData.getDisplayMana()) {
-                    SetScoreboardMinimal(player, Optional.empty());
+                    ScoreboardUtils.SetScoreboardMinimal(player, Optional.empty());
                 }
             });
 
