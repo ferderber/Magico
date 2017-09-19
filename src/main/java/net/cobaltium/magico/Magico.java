@@ -4,6 +4,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import net.cobaltium.magico.commands.structures.CreateManaCrystalCommand;
+import net.cobaltium.magico.commands.structures.CreateStructureCommand;
 import net.cobaltium.magico.commands.user.UserCommand;
 import net.cobaltium.magico.commands.user.UserDisplayManaCommand;
 import net.cobaltium.magico.commands.user.UserGiveSpellCommand;
@@ -96,7 +98,8 @@ public class Magico {
         }
 
         CommandFactory.getInstance().registerCommands(this,
-                new UserCommand(), new UserGiveSpellCommand(), new UserSetManaCommand(), new UserDisplayManaCommand());
+                new UserCommand(), new UserGiveSpellCommand(), new UserSetManaCommand(), new UserDisplayManaCommand(),
+                new CreateStructureCommand(), new CreateManaCrystalCommand());
 
     }
 
