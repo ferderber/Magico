@@ -20,7 +20,8 @@ import net.cobaltium.magico.data.MagicoUserData;
 import net.cobaltium.magico.db.Database;
 import net.cobaltium.magico.db.tables.StructureLocation;
 import net.cobaltium.magico.db.tables.UserSpells;
-import net.cobaltium.magico.listeners.MagicoListener;
+import net.cobaltium.magico.listeners.SpellListener;
+import net.cobaltium.magico.listeners.WarpListener;
 import net.cobaltium.magico.spells.SpellType;
 import net.cobaltium.magico.tasks.ManaRestoreTask;
 import org.slf4j.Logger;
@@ -89,7 +90,8 @@ public class Magico {
                 .submit(plugin);
 
         //Listeners
-        this.game.getEventManager().registerListeners(this, new MagicoListener(this.plugin));
+        this.game.getEventManager().registerListeners(this, new SpellListener(this.plugin));
+        this.game.getEventManager().registerListeners(this, new WarpListener(this.plugin));
         SpellType[] spellTypes = SpellType.values();
         for (SpellType spellType : spellTypes) {
             if (spellType.getListener() != null) {
