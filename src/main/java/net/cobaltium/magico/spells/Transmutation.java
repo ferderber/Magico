@@ -17,6 +17,7 @@ import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.item.inventory.type.TileEntityInventory;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.util.blockray.BlockRay;
@@ -46,7 +47,7 @@ public class Transmutation implements Spell {
             MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
             int mana = userData.getMana();
             if (inventory.contains(ItemTypes.APPLE)) {
-                for (Inventory inv : inventory.query(ItemTypes.REDSTONE).slots()) {
+                for (Inventory inv : inventory.query(QueryOperationTypes.ITEM_TYPE.of(ItemTypes.REDSTONE)).slots()) {
                     int quantity = inv.peek().get().getQuantity();
                     if (mana >= quantity * 10) {
                         inv.poll();

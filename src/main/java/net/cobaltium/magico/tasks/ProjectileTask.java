@@ -13,7 +13,7 @@ public class ProjectileTask implements Consumer<Task> {
     private Vector3d startVector;
 
     public ProjectileTask(Entity entity, Vector3d vector) {
-        this.projectile = projectile;
+        this.projectile = entity;
         this.startVector = projectile.getLocation().getPosition();
         this.vector = vector;
     }

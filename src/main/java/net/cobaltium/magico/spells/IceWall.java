@@ -11,7 +11,7 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
-import org.spongepowered.api.world.BlockChangeFlag;
+import org.spongepowered.api.world.BlockChangeFlags;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -52,7 +52,7 @@ public class IceWall implements Spell {
 
             Task.builder().delay(2, TimeUnit.SECONDS).execute(() -> {
                 while (!wallSnapshot.isEmpty()) {
-                    wallSnapshot.remove().restore(true, BlockChangeFlag.NONE);
+                    wallSnapshot.remove().restore(true, BlockChangeFlags.NONE);
                 }
             }).submit(plugin);
         }

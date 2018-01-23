@@ -4,8 +4,8 @@ import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.world.BlockChangeFlag;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.world.BlockChangeFlags;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -36,28 +36,28 @@ public class ManaCrystal {
                         if ((absValJ + absValK) == 1) {
                             currentBlock.setBlock(BlockState.builder().blockType(BlockTypes.STAINED_GLASS).add(Keys.DYE_COLOR, DyeColors.CYAN).build());
                         } else if((absValJ + absValK) == 0) {
-                            currentBlock.setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlag.NONE);
+                            currentBlock.setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlags.NONE);
                         }
                     } else if(i == 2 || i == 18) {
 
                         if ((absValJ + absValK) == 2) {
                             currentBlock.setBlock(BlockState.builder().blockType(BlockTypes.STAINED_GLASS).add(Keys.DYE_COLOR, DyeColors.CYAN).build());
                         } else if((absValJ + absValK) < 2) {
-                            currentBlock.setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlag.NONE);
+                            currentBlock.setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlags.NONE);
                         }
                     } else if(i == 3 || i == 17) {
 
                         if ((absValJ + absValK) == 3  || ((absValJ + absValK == 2) && (j == 0 || k == 0))) {
                             currentBlock.setBlock(BlockState.builder().blockType(BlockTypes.STAINED_GLASS).add(Keys.DYE_COLOR, DyeColors.CYAN).build());
                         } else if ((absValJ + absValK) < 3) {
-                            currentBlock.setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlag.NONE);
+                            currentBlock.setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlags.NONE);
                         }
                     } else {
 
                         if ((absValJ + absValK) == 4 || ((absValJ + absValK == 3) && (j == 0 || k == 0))) {
                             currentBlock.setBlock(BlockState.builder().blockType(BlockTypes.STAINED_GLASS).add(Keys.DYE_COLOR, DyeColors.CYAN).build());
                         } else if ((absValJ + absValK) < 4) {
-                            currentBlock.setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlag.NONE);
+                            currentBlock.setBlockType(BlockTypes.PACKED_ICE, BlockChangeFlags.NONE);
                         }
                     }
                 }
