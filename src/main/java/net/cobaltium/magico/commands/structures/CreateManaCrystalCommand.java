@@ -49,6 +49,7 @@ public class CreateManaCrystalCommand extends BaseCommandExecutor{
 
         if (src instanceof Player) {
             Player player = (Player) src;
+            Location<World> playerLocation = player.getLocation();
             ConnectionSource con = null;
             try {
                 con = Database.getConnection();
@@ -56,7 +57,8 @@ public class CreateManaCrystalCommand extends BaseCommandExecutor{
                 if (!structureDao.isTableExists()) {
                     TableUtils.createTable(structureDao);
                 }
-                StructureLocation location = new StructureLocation(StructureType.MANACRYSTAL, 0, 64, 0);
+                StructureLocation location = new StructureLocation(StructureType.MANACRYSTAL, playerLocation.getBlockX(), playerLocation.getBlockY(),
+                        playerLocation.getBlockZ());
                 structureDao.create(location);
             } catch (SQLException ex) {
                 player.sendMessage(Text.of("Error adding Mana Crystal"));
@@ -64,8 +66,6 @@ public class CreateManaCrystalCommand extends BaseCommandExecutor{
             } finally {
                 con.closeQuietly();
             }
-
-            Location<World> playerLocation = player.getLocation();
 
             ManaCrystal crystal = new ManaCrystal(playerLocation, player);
 
