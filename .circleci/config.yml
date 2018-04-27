@@ -27,7 +27,7 @@ jobs:
           - v1-dependencies-
 
 
-      - run: gradlew build
+      - run: ./gradlew build
 
       - save_cache:
           paths:
