@@ -34,14 +34,24 @@ public class Transmutation implements Spell {
         Optional<BlockSnapshot> block_ = e.get(EventContextKeys.BLOCK_HIT);
         if (block_.isPresent()) {
             BlockSnapshot block = block_.get();
-            transmuteRecipe(block, player);
-        } else {
-            transmuteItems(player);
+            if (isValidCarrier(block)) {
+                transmuteRecipe(block, player);
+                return;
+            }
         }
+        transmuteItems(player);
+    }
+
+    /**
+     * Checks that the transmutation block is a valid "transmutation table"
+     * Other blocks will be added in the future.
+     * @param block
+     */
+    private boolean isValidCarrier(BlockSnapshot block) {
+        return block.getState().getType() == BlockTypes.BLACK_SHULKER_BOX;
     }
 
     private void transmuteRecipe(BlockSnapshot block, Player player) {
-        if (block.getState().getType() == BlockTypes.BLACK_SHULKER_BOX) {
             TileEntityCarrier box = (TileEntityCarrier) block.getLocation().get().getTileEntity().get();
             TileEntityInventory<TileEntityCarrier> inventory = box.getInventory();
             MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
@@ -59,7 +69,6 @@ public class Transmutation implements Spell {
                 player.offer(userData);
                 ScoreboardUtils.SetScoreboardMinimal(player, Optional.empty());
             }
-        }
     }
 
     private void transmuteItems(Player player) {
