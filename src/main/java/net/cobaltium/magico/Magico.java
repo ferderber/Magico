@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import net.cobaltium.magico.commands.structures.CreateManaCrystalCommand;
+import net.cobaltium.magico.commands.structures.CreateSpellBookcaseCommand;
 import net.cobaltium.magico.commands.structures.CreateStructureCommand;
 import net.cobaltium.magico.commands.user.UserCommand;
 import net.cobaltium.magico.commands.user.UserDisplayManaCommand;
@@ -23,6 +24,7 @@ import net.cobaltium.magico.db.tables.UserSpells;
 import net.cobaltium.magico.listeners.SpellListener;
 import net.cobaltium.magico.listeners.WarpListener;
 import net.cobaltium.magico.spells.SpellType;
+import net.cobaltium.magico.structures.StructureType;
 import net.cobaltium.magico.tasks.ManaRestoreTask;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
@@ -72,7 +74,7 @@ public class Magico {
                 .buildAndRegister(plugin);
 
 
-        StructureLocation location = new StructureLocation(0, 0, 64, 0);
+        StructureLocation location = new StructureLocation(StructureType.MANACRYSTAL, 0, 64, 0);
         ConnectionSource con = null;
         try {
             con = Database.getConnection();
@@ -101,7 +103,7 @@ public class Magico {
 
         CommandFactory.getInstance().registerCommands(this,
                 new UserCommand(), new UserGiveSpellCommand(), new UserSetManaCommand(), new UserDisplayManaCommand(),
-                new CreateStructureCommand(), new CreateManaCrystalCommand());
+                new CreateStructureCommand(), new CreateManaCrystalCommand(), new CreateSpellBookcaseCommand());
 
     }
 
