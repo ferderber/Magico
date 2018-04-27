@@ -24,7 +24,8 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         this(100, -1, false, false, false, 1);
     }
 
-    protected MagicoUserData(int mana, int spellId, boolean scoreboardClosing, boolean displayMana, boolean isCastingSpell, int manaRestoreMultiplier) {
+    protected MagicoUserData(int mana, int spellId, boolean scoreboardClosing, boolean displayMana, boolean isCastingSpell,
+            int manaRestoreMultiplier) {
         this.mana = mana;
         this.currentSpellId = spellId;
         this.scoreboardClosing = scoreboardClosing;
@@ -117,8 +118,7 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         this.mana = mana;
     }
 
-    public void setScoreboardClosing(boolean scoreboardClosing)
-    {
+    public void setScoreboardClosing(boolean scoreboardClosing) {
         this.scoreboardClosing = scoreboardClosing;
     }
 
@@ -193,10 +193,8 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         return new ImmutableMagicoUserData(mana, currentSpellId, scoreboardClosing, displayMana, isCastingSpell, manaRestoreMultiplier);
     }
 
-    @Override
-    public DataContainer toContainer() {
-        return super.toContainer()
-                .set(MagicoKeys.CURRENT_SPELL, currentSpellId)
+    @Override protected DataContainer fillContainer(DataContainer dataContainer) {
+        return dataContainer.set(MagicoKeys.CURRENT_SPELL, currentSpellId)
                 .set(MagicoKeys.PLAYER_MANA, mana)
                 .set(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing)
                 .set(MagicoKeys.DISPLAY_MANA, displayMana)

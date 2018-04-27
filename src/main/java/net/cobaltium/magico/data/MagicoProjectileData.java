@@ -83,9 +83,10 @@ public class MagicoProjectileData extends AbstractData<MagicoProjectileData, Imm
         return 1;
     }
 
+
     @Override
-    public DataContainer toContainer() {
-        return super.toContainer().set(MagicoKeys.DOES_BLOCK_DAMAGE, blockDamage);
+    protected DataContainer fillContainer(DataContainer dataContainer) {
+        return dataContainer.set(MagicoKeys.DOES_BLOCK_DAMAGE, blockDamage);
     }
 
 }
