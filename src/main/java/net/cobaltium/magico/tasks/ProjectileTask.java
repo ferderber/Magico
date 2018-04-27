@@ -21,7 +21,7 @@ public class ProjectileTask implements Consumer<Task> {
     @Override
     public void accept(Task task) {
         projectile.setVelocity(vector);
-        if (vector.distance(startVector) >= 100) {
+        if (projectile.getLocation().getPosition().distance(startVector) >= 100) {
             projectile.remove();
             task.cancel();
         }
