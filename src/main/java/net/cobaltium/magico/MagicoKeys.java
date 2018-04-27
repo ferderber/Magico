@@ -62,4 +62,11 @@ public class MagicoKeys {
             .query(DataQuery.of("displaymana"))
             .id("display_mana")
             .build();
+    public static Key<Value<Boolean>> IS_STRUCTURE_BLOCK = Key.builder()
+            .type(new TypeToken<Value<Boolean>>() {
+            })
+            .name("IsStructureBlock")
+            .query(DataQuery.of("isstructureblock"))
+            .id("is_structure_block")
+            .build();
 }
