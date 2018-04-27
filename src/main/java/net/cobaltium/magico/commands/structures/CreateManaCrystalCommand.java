@@ -1,5 +1,6 @@
 package net.cobaltium.magico.commands.structures;
 
+import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.field.types.UuidType;
@@ -11,6 +12,8 @@ import net.cobaltium.magico.commands.utils.ParentCommand;
 import net.cobaltium.magico.db.Database;
 import net.cobaltium.magico.db.tables.StructureLocation;
 import net.cobaltium.magico.structures.ManaCrystal;
+import net.cobaltium.magico.structures.StructureType;
+import org.slf4j.Logger;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -27,6 +30,9 @@ import java.sql.SQLException;
 @ParentCommand(parent = CreateStructureCommand.class)
 @Command(aliases = {"manacrystal", "mana", "mc"}, permission = "magico.commands.user")
 public class CreateManaCrystalCommand extends BaseCommandExecutor{
+
+    @Inject
+    private Logger logger;
 
     public CreateManaCrystalCommand() {
     }
@@ -50,10 +56,11 @@ public class CreateManaCrystalCommand extends BaseCommandExecutor{
                 if (!structureDao.isTableExists()) {
                     TableUtils.createTable(structureDao);
                 }
-                StructureLocation location = new StructureLocation(0, 0, 64, 0);
+                StructureLocation location = new StructureLocation(StructureType.MANACRYSTAL, 0, 64, 0);
                 structureDao.create(location);
             } catch (SQLException ex) {
-                player.sendMessage(Text.of("Error adding spell"));
+                player.sendMessage(Text.of("Error adding Mana Crystal"));
+                logger.error(ex.getMessage());
             } finally {
                 con.closeQuietly();
             }
