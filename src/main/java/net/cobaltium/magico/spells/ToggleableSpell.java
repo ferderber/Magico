@@ -13,11 +13,11 @@ public abstract class ToggleableSpell implements Spell {
         MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
         if (userData.isCastingSpell()) {
             userData.setCastingSpell(false);
-            DataTransactionResult result = player.offer(userData);
+            player.offer(userData);
             toggleOff(plugin, player);
         } else {
             userData.setCastingSpell(true);
-            DataTransactionResult result = player.offer(userData);
+            player.offer(userData);
             toggleOn(plugin, player);
         }
     }
