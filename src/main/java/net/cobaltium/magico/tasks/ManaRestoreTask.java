@@ -19,43 +19,41 @@ import java.util.function.Consumer;
 
 public class ManaRestoreTask implements Consumer<Task> {
 
+    private List<StructureLocation> structures;
 
     public ManaRestoreTask() {
-    }
-
-    public void accept(Task task) {
-
         DataSourceConnectionSource con = null;
         try {
             con = Database.getConnection();
             Dao<StructureLocation, Long> structureLocationDao = DaoManager.createDao(con, StructureLocation.class);
-            List<StructureLocation> structures = structureLocationDao.queryForAll();
+            structures = structureLocationDao.queryForAll();
 
-            Collection<Player> players = Sponge.getServer().getOnlinePlayers();
-            players.forEach((player) -> {
-                for (StructureLocation structure : structures) {
-                    double distance = player.getLocation().getPosition().distance(structure.getBlockLocation().toDouble());
-                    if (distance <= 100) {
-                        MagicoUserData data = player.getOrCreate(MagicoUserData.class).get();
-                        if (data.getMana() < 200) {
-                            data.modifyMana(data.getManaRestoreMultiplier() * 5);
-                            player.offer(data);
-                        }
-                        break;
-                    }
-                }
-                //update scoreboard
-                MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
-                if (!userData.getScoreboardClosing() && userData.getDisplayMana()) {
-                    ScoreboardUtils.SetScoreboardMinimal(player, Optional.empty());
-                }
-            });
-
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
 
         } finally {
             con.closeQuietly();
         }
+    }
 
+    public void accept(Task task) {
+        Collection<Player> players = Sponge.getServer().getOnlinePlayers();
+        players.forEach((player) -> {
+            for (StructureLocation structure : structures) {
+                double distance = player.getLocation().getPosition().distance(structure.getBlockLocation().toDouble());
+                if (distance <= 100) {
+                    MagicoUserData data = player.getOrCreate(MagicoUserData.class).get();
+                    if (data.getMana() < 200) {
+                        data.modifyMana(data.getManaRestoreMultiplier() * 5);
+                        player.offer(data);
+                    }
+                    break;
+                }
+            }
+            //update scoreboard
+            MagicoUserData userData = player.getOrCreate(MagicoUserData.class).get();
+            if (!userData.getScoreboardClosing() && userData.getDisplayMana()) {
+                ScoreboardUtils.SetScoreboardMinimal(player, Optional.empty());
+            }
+        });
     }
 }
