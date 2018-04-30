@@ -10,8 +10,8 @@ public enum SpellType {
     ICE_WALL(1, "Ice Wall", new IceWall(), null, "magico.spells.icewall"),
     TELEPORT(2, "Teleport", new Teleport(), null, "magico.spells.teleport"),
     LEVITATE(3, "Levitate", new Levitate(), null, "magico.spells.levitate"),
-    JAWS(4, "Jaws", new Jaws(), null, "magico.spells.jaws"),
-    TRANSMUTATION(4, "Transmutation", new Transmutation(), null, "magico.spells.transmutation");
+    TRANSMUTATION(4, "Transmutation", new Transmutation(), null, "magico.spells.transmutation"),
+    JAWS(5, "Jaws", new Jaws(), null, "magico.spells.jaws");
 
     private int spellId;
     private String spellName;

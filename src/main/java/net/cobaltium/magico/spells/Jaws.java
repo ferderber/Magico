@@ -15,19 +15,24 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Optional;
+import java.util.Vector;
 
 public class Jaws implements Spell {
 
     private final int MANA_COST = 15;
+    //amount of randomness we offset (in blocks) the spawned jaws by.
+    private final double randomness = 0.5;
 
     @Override
     public void handle(EventContext e, PluginContainer plugin, Player player) {
         Vector3d rotation = player.getHeadRotation();
         final Vector3d direction = Quaterniond.fromAxesAnglesDeg(0, -rotation.getY(), -rotation.getZ()).getDirection();
+        final double offset = randomness * 2;
 
         for(int i=1; i<=5; i++) {
             Location<World> spawnStart = player.getLocation().sub(direction.mul(-(i*2)));
-            spawnFangsAtGround(spawnStart.add(0f, 5f, 0f));
+            Location<World> alteredStart = spawnStart.add(randomOffset());
+            spawnFangsAtGround(alteredStart.add(0f, 5f, 0f));
         }
     }
 
@@ -49,6 +54,12 @@ public class Jaws implements Spell {
                 world.spawnEntity(fangs);
             }
         }
+    }
+
+    //returns a randomized vector based on the randomness var
+    private Vector3d randomOffset() {
+        final double offset = randomness * 2;
+        return new Vector3d(Math.random() * offset - randomness, 0f, Math.random() * offset - randomness);
     }
 
     @Override
