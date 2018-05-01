@@ -11,7 +11,8 @@ public enum SpellType {
     TELEPORT(2, "Teleport", new Teleport(), null, "magico.spells.teleport"),
     LEVITATE(3, "Levitate", new Levitate(), null, "magico.spells.levitate"),
     JAWS(4, "Jaws", new Jaws(), null, "magico.spells.jaws"),
-    TRANSMUTATION(4, "Transmutation", new Transmutation(), null, "magico.spells.transmutation");
+    TRANSMUTATION(4, "Transmutation", new Transmutation(), null, "magico.spells.transmutation"),
+    ENTITYGRAB(6, "Entity Grab", new EntityGrab(), null, "magico.spells.entitygrab");
 
     private int spellId;
     private String spellName;
