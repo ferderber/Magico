@@ -85,7 +85,7 @@ public class MagicoStructureData extends AbstractData<MagicoStructureData, Immut
 
 
     @Override
-    protected DataContainer fillContainer(DataContainer dataContainer) {
-        return dataContainer.set(MagicoKeys.IS_STRUCTURE_BLOCK, structureBlock);
+    public DataContainer toContainer() {
+        return super.toContainer().set(MagicoKeys.IS_STRUCTURE_BLOCK, structureBlock);
     }
 }

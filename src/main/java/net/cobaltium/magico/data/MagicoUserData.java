@@ -193,8 +193,9 @@ public class MagicoUserData extends AbstractData<MagicoUserData, ImmutableMagico
         return new ImmutableMagicoUserData(mana, currentSpellId, scoreboardClosing, displayMana, isCastingSpell, manaRestoreMultiplier);
     }
 
-    @Override protected DataContainer fillContainer(DataContainer dataContainer) {
-        return dataContainer.set(MagicoKeys.CURRENT_SPELL, currentSpellId)
+    @Override
+    public DataContainer toContainer() {
+        return super.toContainer().set(MagicoKeys.CURRENT_SPELL, currentSpellId)
                 .set(MagicoKeys.PLAYER_MANA, mana)
                 .set(MagicoKeys.SCOREBOARD_CLOSING, scoreboardClosing)
                 .set(MagicoKeys.DISPLAY_MANA, displayMana)
