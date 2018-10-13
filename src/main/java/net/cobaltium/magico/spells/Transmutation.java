@@ -58,7 +58,7 @@ public class Transmutation implements Spell {
             int mana = userData.getMana();
             if (inventory.contains(ItemTypes.APPLE)) {
                 for (Inventory inv : inventory.query(QueryOperationTypes.ITEM_TYPE.of(ItemTypes.REDSTONE)).slots()) {
-                    int quantity = inv.peek().get().getQuantity();
+                    int quantity = inv.peek().getQuantity();
                     if (mana >= quantity * 10) {
                         inv.poll();
                         inv.set(ItemStack.builder().itemType(ItemTypes.IRON_INGOT).quantity(quantity).build());

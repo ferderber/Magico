@@ -1,6 +1,8 @@
 package net.cobaltium.magico.structures;
 
 
+import net.cobaltium.magico.data.ImmutableMagicoStructureData;
+import net.cobaltium.magico.data.MagicoStructureData;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.world.Location;
 

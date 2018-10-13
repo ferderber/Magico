@@ -2,6 +2,7 @@ package net.cobaltium.magico.data;
 
 import net.cobaltium.magico.MagicoKeys;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.manipulator.immutable.common.AbstractImmutableData;
 import org.spongepowered.api.data.value.immutable.ImmutableValue;
 
@@ -44,6 +45,17 @@ public class ImmutableMagicoUserData extends AbstractImmutableData<ImmutableMagi
 
         registerFieldGetter(MagicoKeys.IS_CASTING_SPELL, () -> this.isCastingSpell);
         registerKeyValue(MagicoKeys.IS_CASTING_SPELL, this::castingSpell);
+    }
+
+    @Override
+    protected DataContainer fillContainer(DataContainer dataContainer) {
+        dataContainer.set(MagicoKeys.PLAYER_MANA.getQuery(), mana);
+        dataContainer.set(MagicoKeys.CURRENT_SPELL.getQuery(), currentSpellId);
+        dataContainer.set(MagicoKeys.SCOREBOARD_CLOSING.getQuery(), scoreboardClosing);
+        dataContainer.set(MagicoKeys.DISPLAY_MANA.getQuery(), displayMana);
+        dataContainer.set(MagicoKeys.MANA_RESTORE_MULTIPLIER.getQuery(), manaRestoreMultiplier);
+        dataContainer.set(MagicoKeys.IS_CASTING_SPELL.getQuery(), isCastingSpell);
+        return dataContainer;
     }
 
     private ImmutableValue<Integer> mana() {

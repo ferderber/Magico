@@ -61,11 +61,11 @@ public class UserGiveSpellCommand extends BaseCommandExecutor {
             } else {
                 Text.Builder spellList = Text.builder()
                         .append(Text.of("Unknown spell"))
-                        .append(Text.NEW_LINE)
+                        .append(Text.newLine())
                         .append(Text.of("Available Spells: "));
                 SpellType[] spellTypes = SpellType.values();
                 for (int i = 0; i < spellTypes.length; i++) {
-                    spellList.append(Text.NEW_LINE).append(Text.of(spellTypes[i].getSpellKey()));
+                    spellList.append(Text.newLine()).append(Text.of(spellTypes[i].getSpellKey()));
                 }
                 player.sendMessage(spellList.build());
             }

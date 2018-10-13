@@ -31,8 +31,8 @@ public class ImmutableMagicoProjectileData extends AbstractImmutableData<Immutab
     }
 
     @Override
-    public DataContainer toContainer() {
-        return super.toContainer().set(MagicoKeys.DOES_BLOCK_DAMAGE.getQuery(), blockDamage);
+    public DataContainer fillContainer(DataContainer c) {
+        return c.set(MagicoKeys.DOES_BLOCK_DAMAGE.getQuery(), blockDamage);
     }
 
     @Override

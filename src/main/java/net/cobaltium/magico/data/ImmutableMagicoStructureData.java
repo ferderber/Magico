@@ -9,7 +9,7 @@ import org.spongepowered.api.data.value.immutable.ImmutableValue;
 public class ImmutableMagicoStructureData extends AbstractImmutableData<ImmutableMagicoStructureData, MagicoStructureData> {
     boolean structureBlock;
 
-    protected ImmutableMagicoStructureData(boolean value) {
+    public ImmutableMagicoStructureData(boolean value) {
         structureBlock = value;
         registerGetters();
     }
@@ -29,8 +29,8 @@ public class ImmutableMagicoStructureData extends AbstractImmutableData<Immutabl
     }
 
     @Override
-    public DataContainer toContainer() {
-        return super.toContainer().set(MagicoKeys.IS_STRUCTURE_BLOCK.getQuery(), structureBlock);
+    public DataContainer fillContainer(DataContainer c) {
+        return c.set(MagicoKeys.IS_STRUCTURE_BLOCK.getQuery(), structureBlock);
     }
 
     @Override

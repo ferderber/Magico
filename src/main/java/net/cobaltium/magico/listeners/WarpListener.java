@@ -23,6 +23,6 @@ public class WarpListener {
     public void placeBlock(ChangeBlockEvent.Place event, @First Player player) {
         Warp warp = new Warp();
         List<Transaction<BlockSnapshot>> blocks = event.getTransactions();
-        blocks.forEach((block) -> block.getFinal().getLocation().ifPresent((location) -> warp.isStructure(location)));
+        blocks.forEach((block) -> block.getFinal().getLocation().ifPresent(warp::isStructure));
     }
 }
