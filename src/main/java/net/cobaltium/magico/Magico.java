@@ -22,7 +22,6 @@ import net.cobaltium.magico.db.Database;
 import net.cobaltium.magico.db.tables.StructureLocation;
 import net.cobaltium.magico.db.tables.UserSpells;
 import net.cobaltium.magico.listeners.SpellListener;
-import net.cobaltium.magico.listeners.StructureInteractListener;
 import net.cobaltium.magico.listeners.WarpListener;
 import net.cobaltium.magico.spells.SpellType;
 import net.cobaltium.magico.structures.StructureType;
@@ -95,7 +94,6 @@ public class Magico {
         //Listeners
         this.game.getEventManager().registerListeners(this, new SpellListener(this.plugin));
         this.game.getEventManager().registerListeners(this, new WarpListener(this.plugin));
-        this.game.getEventManager().registerListeners(this, new StructureInteractListener());
         SpellType[] spellTypes = SpellType.values();
         for (SpellType spellType : spellTypes) {
             if (spellType.getListener() != null) {
